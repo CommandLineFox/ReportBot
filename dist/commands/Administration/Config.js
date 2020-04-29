@@ -11,7 +11,7 @@ class Config extends Command_1.default {
         super({ name: "Config", triggers: ["config", "cfg"], description: "", group: Groups_1.Administration });
     }
     async run(event) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         const database = event.client.database;
         const guild = await (database === null || database === void 0 ? void 0 : database.guilds.findOne({ id: event.guild.id }));
         const args = await ArgumentHandler_1.default.getArguments(event, event.argument, "string", "string");
@@ -50,6 +50,59 @@ class Config extends Command_1.default {
                     default: {
                         event.reply("valid subcommands are add and remove.");
                     }
+                }
+            }
+            case "submitchannel": {
+                const subargument = await ArgumentHandler_1.default.getArguments(event, argument, "string", "string");
+                if (!subargument) {
+                    event.reply("invalid arguments.");
+                    return;
+                }
+                const [sub2, value] = subargument;
+                switch (sub2) {
+                    case "set": {
+                        const id = event.guild.channels.cache.get(value).id;
+                        if (id && ((_j = guild === null || guild === void 0 ? void 0 : guild.config.channels) === null || _j === void 0 ? void 0 : _j.submitted) === id) {
+                            (guild === null || guild === void 0 ? void 0 : guild.config.channels).submitted = value;
+                        }
+                        else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.channels).submitted === value) {
+                            event.reply("that channel is already selected.");
+                        }
+                    }
+                    case "remove": {
+                        (guild === null || guild === void 0 ? void 0 : guild.config.channels).submitted = "";
+                    }
+                }
+            }
+            case "handledchannel": {
+                const subargument = await ArgumentHandler_1.default.getArguments(event, argument, "string", "string");
+                if (!subargument) {
+                    event.reply("invalid arguments.");
+                    return;
+                }
+                const [sub2, value] = subargument;
+                switch (sub2) {
+                    case "set": {
+                        const id = event.guild.channels.cache.get(value).id;
+                        if (id && ((_k = guild === null || guild === void 0 ? void 0 : guild.config.channels) === null || _k === void 0 ? void 0 : _k.handled) === id) {
+                            (guild === null || guild === void 0 ? void 0 : guild.config.channels).handled = value;
+                        }
+                        else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.channels).handled === value) {
+                            event.reply("that channel is already selected.");
+                        }
+                    }
+                    case "remove": {
+                        (guild === null || guild === void 0 ? void 0 : guild.config.channels).handled = "";
+                    }
+                }
+            }
+            case "prefix": {
+                const prefix = argument[1];
+                if ((guild === null || guild === void 0 ? void 0 : guild.config).prefix === prefix) {
+                    event.reply("that prefix is already set.");
+                }
+                else {
+                    (guild === null || guild === void 0 ? void 0 : guild.config).prefix = prefix;
                 }
             }
         }

@@ -6,7 +6,7 @@ class Database {
         this.config = config;
     }
     async connect() {
-        const client = await mongodb_1.connect(this.config.url, this.config.MongoOptions)
+        const client = await mongodb_1.connect(this.config.url, this.config.mongoOptions)
             .catch(err => {
             throw err;
         });

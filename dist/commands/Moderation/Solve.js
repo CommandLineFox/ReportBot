@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const Helpers_1 = require("../../utils/Helpers");
-class Submit extends Command_1.default {
+class Solve extends Command_1.default {
     constructor() {
         super({ name: "Solve", triggers: ["approve", "solve"], description: "Generates a report on a specified user", group: Groups_1.Moderation });
     }
@@ -22,5 +22,5 @@ class Submit extends Command_1.default {
         }
     }
 }
-exports.default = Submit;
+exports.default = Solve;
 //# sourceMappingURL=Solve.js.map

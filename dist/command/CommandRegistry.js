@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Config_1 = __importDefault(require("../commands/Administration/Config"));
 const Help_1 = __importDefault(require("../commands/Basic/Help"));
 const Ping_1 = __importDefault(require("../commands/Basic/Ping"));
+const Solve_1 = __importDefault(require("../commands/Moderation/Solve"));
+const Submit_1 = __importDefault(require("../commands/Moderation/Submit"));
 const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
 const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
 const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
@@ -15,6 +17,8 @@ class CommandRegistry {
             new Config_1.default(),
             new Help_1.default(),
             new Ping_1.default(),
+            new Solve_1.default(),
+            new Submit_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
             new LogOff_1.default()

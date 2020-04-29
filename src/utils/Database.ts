@@ -4,7 +4,7 @@ import { Guild } from "@models/Guild";
 interface DatabaseConfig {
     url: string;
     name: string;
-    MongoOptions?: MongoClientOptions;
+    mongoOptions?: MongoClientOptions;
 }
 
 export class Database {
@@ -12,7 +12,7 @@ export class Database {
     constructor(protected config: DatabaseConfig) {}
 
     async connect() {
-        const client = await connect(this.config.url, this.config.MongoOptions)
+        const client = await connect(this.config.url, this.config.mongoOptions)
             .catch(err => {
                 throw err;
             });

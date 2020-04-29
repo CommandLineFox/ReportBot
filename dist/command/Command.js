@@ -19,7 +19,7 @@ class Command {
             event.reply('you do not own me!');
             return;
         }
-        if ((this.modOnly && !event.client.isMod(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
+        if ((this.modOnly && !event.client.isMod(event.member) && !event.client.isAdmin(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
             event.reply('you do not have permission to run this command.');
             return;
         }

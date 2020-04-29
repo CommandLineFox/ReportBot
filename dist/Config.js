@@ -9,7 +9,10 @@ exports.default = {
     modlog: ConfigHandler_1.string(""),
     db: ConfigHandler_1.object({
         name: ConfigHandler_1.string(""),
-        url: ConfigHandler_1.string("")
+        url: ConfigHandler_1.string(""),
+        mongoOptions: ConfigHandler_1.object({
+            useUnifiedTopology: ConfigHandler_1.boolean(true)
+        })
     })
 };
 //# sourceMappingURL=Config.js.map
