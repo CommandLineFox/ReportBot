@@ -1,0 +1,59 @@
+import Command from "@command/Command";
+import { Administration } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
+import ArgumentHandler from "~/command/ArgumentHandler";
+
+export default class Config extends Command {
+    constructor () {
+        super({name: "Config", triggers: ["config", "cfg"], description: "", group: Administration});
+    }
+
+    async run(event: CommandEvent) {
+        const database = event.client.database;
+        const guild = await database?.guilds.findOne({ id: event.guild.id});
+
+        const args = await ArgumentHandler.getArguments(event, event.argument, "string", "string");
+        if (!args) {
+            event.reply("invalid arguments.");
+            return;
+        }
+
+        const [sub, argument] = args;
+
+        switch (sub) {
+            case "staff": {
+                const subargument = await ArgumentHandler.getArguments(event, argument, "string", "string");
+                if (!subargument) {
+                    event.reply("invalid arguments.");
+                    return;
+                }
+
+                const [sub2, value] = subargument;
+
+                switch (sub2) {
+                    case "add": {
+                        const id = event.guild.roles.cache.find(role => role.name === value)?.id;
+                        if (id && !guild?.config.roles?.staff!.includes(id)) {
+                            guild?.config.roles?.staff?.push(value);
+                        }
+                        else if (id && guild?.config.roles?.staff!.includes(id)) {
+                            event.reply("that role is already a staff role.")
+                        }
+                    }
+                    case "remove": {
+                        const id = event.guild.roles.cache.find(role => role.name === value)?.id;
+                        if (!id) {
+                            event.reply("That role isn't a staff role");
+                        }
+                        else if (id && guild?.config.roles?.staff!.includes(id)) {
+                            guild?.config.roles!.staff = guild?.config.roles?.staff!.filter(role => role !== id)
+                        }
+                    }
+                    default: {
+                        event.reply("valid subcommands are add and remove.");
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,55 +1,46 @@
 import { ObjectId } from "bson";
 
+export interface Report {
+    id: number;
+    user: string;
+    reason: string;
+    evidence: string;
+    staff: string;
+    handled: boolean;
+    message?: string;
+}
+
 export interface GuildChannels {
-    logging?: string;
-    modmail?: string;
-    starboard?: string;
+    submitted: string;
+    handled: string;
 }
 
 export interface GuildRoles {
-    [key: string]: string | string[] | undefined;
-    muted?: string;
-    moderator?: string;
-    groupRoles?: string[];
-    lockedRoles?: string[];
-}
-
-export interface GuildStarboardMessage {
-    id: string;
-    starboardID: string;
-    count: number;
-    content: string;
-}
-
-export interface GuildStarboard {
-    emoji: string;
-    minCount: number;
-    ignoredChannels: string[];
-    messages: GuildStarboardMessage[];
+    staff?: string[];
 }
 
 export interface GuildConfig {
     prefix?: string;
-    blacklisted?: boolean;
     channels?: GuildChannels;
     roles?: GuildRoles;
-    starboard?: GuildStarboard;
-    enabledPlugins?: string[];
 }
 
 export interface GuildDoc {
     id: string;
     config?: GuildConfig;
+    reports?: Report[];
 }
 
 export class Guild implements GuildDoc {
     _id: ObjectId;
     id: string;
     config: GuildConfig;
+    reports: Report[];
+
     constructor(data: GuildDoc) {
         this._id = new ObjectId();
         this.id = data.id;
         this.config = data.config ?? {};
-        this.config.blacklisted = data.config?.blacklisted ?? false;
+        this.reports = data.reports ?? [];
     }
 }

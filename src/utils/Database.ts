@@ -1,7 +1,5 @@
 import { connect, Db, MongoClientOptions, Collection } from 'mongodb';
-import { User } from '@models/User';
-import { Guild } from '@models/Guild';
-import { Report } from '@models/Report';
+import { Guild } from "@models/Guild";
 
 interface DatabaseConfig {
     url: string;
@@ -22,14 +20,7 @@ export class Database {
         console.log("Connected to database");
     }
 
-    get reports(): Collection<Report> {
-        return this.db.collection('reports');
-    }
     get guilds(): Collection<Guild> {
-    return this.db.collection('guilds');
-    }
-
-    get users(): Collection<User> {
-    return this.db.collection('users');
+        return this.db.collection('guilds');
     }
 }

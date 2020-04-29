@@ -13,14 +13,8 @@ class Database {
         this.db = client.db(this.config.name);
         console.log("Connected to database");
     }
-    get reports() {
-        return this.db.collection('reports');
-    }
     get guilds() {
         return this.db.collection('guilds');
-    }
-    get users() {
-        return this.db.collection('users');
     }
 }
 exports.Database = Database;
