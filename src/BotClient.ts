@@ -2,7 +2,6 @@ import { Client, ClientOptions, User, Guild, GuildMember, MessageEmbed, Message,
 import configTemplate from "~/Config";
 import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
-import { EventHandler } from "@event/EventHandler";
 import { Database } from "@utils/Database";
 
 type configTemplate = typeof configTemplate;
@@ -17,7 +16,6 @@ export default class BotClient extends Client {
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler(this)
             new CommandHandler (this)
         });
         this.on("message", (message) => {
