@@ -1,4 +1,4 @@
-import { Client, ClientOptions, User, Guild, GuildMember, MessageEmbed, Message, TextChannel } from "discord.js";
+import { Client, ClientOptions, User, Guild, GuildMember } from "discord.js";
 import configTemplate from "~/Config";
 import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
@@ -18,19 +18,10 @@ export default class BotClient extends Client {
         this.once("ready", () => {
             new CommandHandler (this)
         });
-        this.on("message", (message) => {
-            if (!message.guild && !message.author.bot) {
-                this.lastDmAuthor = message.author;
-                this.generateReceivedMessage(message);
-            }
-        });
     }
     
-    isMod(member: GuildMember): boolean {
+    isMod(_member: GuildMember, _guild: Guild): boolean {
         let mod = false;
-        this.config.staff.forEach(id => {
-            mod = member.roles.cache.has(id as string);
-        })
         return mod;
     }
 
@@ -47,31 +38,5 @@ export default class BotClient extends Client {
 
         }
         return this.config.prefix;
-    }
-
-    private getModLog(guild?: Guild): string {
-        if (guild) {
-
-        }
-        return this.config.modlog;
-    }
-
-    private generateReceivedMessage(message: Message) {
-        const client = message.client;
-        const author = message.author;
-        const received = new MessageEmbed()
-            .setTitle(author.username)
-            .setDescription(message)
-            .setColor("#61e096")
-            .setFooter("ID: " + author.id, author.displayAvatarURL());
-        if (message.attachments && message.attachments.first()) {
-            received.setImage(message.attachments.first()!.url);
-        }
-        
-        const channel = client.channels.cache.find(channel => channel.id == this.getModLog()) as TextChannel;
-        
-        if(channel) {
-            channel.send({ embed: received });
-        }
     }
 }

@@ -1,5 +1,5 @@
 import Command from "@command/Command";
-import Config from "@commands/Administration/Config";
+import Config from "@commands/Configuration/Config";
 import Group from "@command/Group";
 import Help from "@commands/Basic/Help";
 import Ping from "@commands/Basic/Ping";

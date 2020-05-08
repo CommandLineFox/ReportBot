@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Config_1 = __importDefault(require("../commands/Administration/Config"));
+const Config_1 = __importDefault(require("../commands/Configuration/Config"));
 const Help_1 = __importDefault(require("../commands/Basic/Help"));
 const Ping_1 = __importDefault(require("../commands/Basic/Ping"));
 const Solve_1 = __importDefault(require("../commands/Moderation/Solve"));

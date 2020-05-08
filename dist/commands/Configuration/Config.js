@@ -8,7 +8,7 @@ const Groups_1 = require("../../Groups");
 const ArgumentHandler_1 = __importDefault(require("../../command/ArgumentHandler"));
 class Config extends Command_1.default {
     constructor() {
-        super({ name: "Config", triggers: ["config", "cfg"], description: "", group: Groups_1.Administration });
+        super({ name: "Config", triggers: ["config", "cfg"], description: "", group: Groups_1.Configuration });
     }
     async run(event) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
@@ -31,7 +31,7 @@ class Config extends Command_1.default {
                     const [sub2, value] = subargument;
                     switch (sub2) {
                         case "add": {
-                            const id = await ((_a = event.guild.roles.cache.find(role => role.name.toLowerCase() === value)) === null || _a === void 0 ? void 0 : _a.id);
+                            const id = await ((_a = event.guild.roles.cache.find(role => role.name.toLowerCase() === value.toLowerCase())) === null || _a === void 0 ? void 0 : _a.id);
                             if (id && !((_b = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _b === void 0 ? void 0 : _b.staff).includes(id)) {
                                 (_d = (_c = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _c === void 0 ? void 0 : _c.staff) === null || _d === void 0 ? void 0 : _d.push(value);
                             }

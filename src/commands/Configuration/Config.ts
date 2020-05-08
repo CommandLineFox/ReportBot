@@ -1,11 +1,11 @@
 import Command from "@command/Command";
-import { Administration } from "~/Groups";
+import { Configuration } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import ArgumentHandler from "~/command/ArgumentHandler";
 
 export default class Config extends Command {
     constructor() {
-        super({ name: "Config", triggers: ["config", "cfg"], description: "", group: Administration });
+        super({ name: "Config", triggers: ["config", "cfg"], description: "", group: Configuration });
     }
 
     async run(event: CommandEvent) {
@@ -33,7 +33,7 @@ export default class Config extends Command {
 
                     switch (sub2) {
                         case "add": {
-                            const id = await event.guild.roles.cache.find(role => role.name === value)?.id;
+                            const id = await event.guild.roles.cache.find(role => role.name.toLowerCase() === value.toLowerCase())?.id;
                             if (id && !guild?.config.roles?.staff!.includes(id)) {
                                 guild?.config.roles?.staff?.push(value);
                             }
@@ -42,7 +42,7 @@ export default class Config extends Command {
                             }
                         }
                         case "remove": {
-                            const id = await event.guild.roles.cache.find(role => role.name === value)?.id;
+                            const id = await event.guild.roles.cache.find(role => role.name.toLowerCase() === value)?.id;
                             if (!id) {
                                 event.reply("That role isn't a staff role");
                             }
