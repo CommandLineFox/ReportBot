@@ -6,12 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const ArgumentHandler_1 = __importDefault(require("../../command/ArgumentHandler"));
-class Config extends Command_1.default {
+class Staff extends Command_1.default {
     constructor() {
         super({ name: "Staff", triggers: ["staff"], description: "Add or remove staff roles for the server", group: Groups_1.Configuration });
     }
     async run(event) {
-        var _a;
+        var _a, _b;
         try {
             const message = event.message;
             const database = event.client.database;
@@ -32,8 +32,19 @@ class Config extends Command_1.default {
                             }
                         }
                     }));
+                    console.log("yes");
                 }
                 case "remove": {
+                    await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({
+                        id: (_b = message.guild) === null || _b === void 0 ? void 0 : _b.id
+                    }, {
+                        "$pull": {
+                            staff: {
+                                argument
+                            }
+                        }
+                    }));
+                    console.log("yeeted");
                 }
                 default: {
                     event.send("valid subcommands are `add` and `remove`.");
@@ -44,5 +55,5 @@ class Config extends Command_1.default {
         }
     }
 }
-exports.default = Config;
+exports.default = Staff;
 //# sourceMappingURL=Staff.js.map

@@ -3,7 +3,7 @@ import { Configuration } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import ArgumentHandler from "~/command/ArgumentHandler";
 
-export default class Config extends Command {
+export default class Staff extends Command {
     constructor() {
         super({ name: "Staff", triggers: ["staff"], description: "Add or remove staff roles for the server", group: Configuration });
     }
@@ -20,7 +20,7 @@ export default class Config extends Command {
             }
 
             const [sub, argument] = args;
-            
+
 
             switch (sub) {
                 case "add": {
@@ -33,23 +33,26 @@ export default class Config extends Command {
                             }
                         }
                     })
-                    /*const id = await event.guild.roles.cache.find(role => role.name.toLowerCase() === argument.toLowerCase())?.id;
-
-                    if (id && !guild?.config.roles?.staff!.includes(id)) {
-                        guild?.config.roles?.staff?.push(argument);
-                    }
-                    else if (id && guild?.config.roles?.staff!.includes(id)) {
-                        event.reply("that role is already a staff role.");
-                    }*/
+                    console.log("yes");
+                    break;
                 }
                 case "remove": {
-                    /*const id = await event.guild.roles.cache.find(role => role.name.toLowerCase() === argument.toLowerCase())?.id;
-                    if (!id) {
-                        event.reply("That role isn't a staff role");
-                    }
-                    else if (id && guild?.config.roles?.staff!.includes(id)) {
-                        guild?.config.roles!.staff = guild?.config.roles?.staff!.filter(role => role !== id)
-                    }*/
+                    await database?.guilds.updateOne({
+                        id: message.guild?.id
+                    }, {
+                        "$pull": {
+                            staff: {
+                                argument
+                            }
+                        }
+                    })
+                    console.log("yeeted");
+                    break;
+                }
+                case "list": {
+                    const guild = await database?.guilds.findOne({ id: message.guild?.id });
+                    guild?.config.roles?.staff;
+                    break;
                 }
                 default: {
                     event.send("valid subcommands are `add` and `remove`.");

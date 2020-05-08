@@ -1,6 +1,6 @@
 import Command from "@command/Command";
-import Config from "@commands/Configuration/Config";
 import Group from "@command/Group";
+import Staff from "~/commands/Configuration/Staff";
 import Help from "@commands/Basic/Help";
 import Ping from "@commands/Basic/Ping";
 import Solve from "@commands/Moderation/Solve";
@@ -11,7 +11,7 @@ import LogOff from "@commands/OwnerOnly/LogOff";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
-        new Config(),
+        new Staff(),
         new Help(),
         new Ping(),
         new Solve(),
