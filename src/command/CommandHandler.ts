@@ -7,9 +7,9 @@ export default class CommandHandler {
     private readonly client: BotClient;
     private mentions: string[];
 
-    constructor (client: BotClient) {
+    constructor(client: BotClient) {
         this.client = client;
-        this.mentions = [ `<@${this.client.user!.id}>`, `<@!${this.client.user!.id}>` ];
+        this.mentions = [`<@${this.client.user!.id}>`, `<@!${this.client.user!.id}>`];
         client.on("message", (message) => {
             if (!message.author.bot) {
                 this.handleMessage(message);

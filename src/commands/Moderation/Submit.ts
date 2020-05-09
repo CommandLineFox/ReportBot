@@ -15,12 +15,18 @@ export default class Submit extends Command {
             const database = event.client.database;
 
             const guild = await database?.guilds.findOne({ id: message.guild!.id });
+
+            if (!guild?.config.channels?.submitted) {
+                event.send("There is no specified channel for me to send reports to.");
+                return;
+            }
+
             const [user, reason, evidence] = argument.split('|');
             let id = guild?.reports.length || 1;
             if (id !== 1) {
                 id += 1;
             }
-            
+
             await database?.guilds.updateOne({
                 id: message.guild?.id
             }, {

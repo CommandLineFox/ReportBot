@@ -15,52 +15,65 @@ export default class Staff extends Command {
 
             const args = await ArgumentHandler.getArguments(event, event.argument, "string", "string");
             if (!args) {
-                event.reply("invalid arguments.");
+                if (args !== ["list"]) {
+                    event.reply("invalid arguments.");
+                }
                 return;
             }
 
-            const [sub, argument] = args;
 
-
-            switch (sub) {
+            switch (args[0]) {
                 case "add": {
+                    const role = message.guild?.roles.cache.find(role => role.name.toLowerCase() === args[1].toLowerCase());
+
+                    if (!role) {
+                        event.send("Couldn't find the role.");
+                        return;
+                    }
                     await database?.guilds.updateOne({
                         id: message.guild?.id
                     }, {
                         "$push": {
-                            staff: {
-                                argument
+                            "config.roles.staff": {
+                                id: role?.id
                             }
                         }
                     })
-                    console.log("yes");
+                        .then(() => event.send(`${role?.name} is now a staff role.`));
                     break;
                 }
                 case "remove": {
+                    const role = message.guild?.roles.cache.find(role => role.name.toLowerCase() === args[1].toLowerCase());
+
+                    if (!role) {
+                        event.send("Couldn't find the role.");
+                        return;
+                    }
+
                     await database?.guilds.updateOne({
                         id: message.guild?.id
                     }, {
                         "$pull": {
-                            staff: {
-                                argument
+                            "config.roles.staff": {
+                                id: role?.id
                             }
                         }
                     })
-                    console.log("yeeted");
+                        .then(() => event.send(`${role?.name} is no longer a staff role.`));
                     break;
                 }
                 case "list": {
                     const guild = await database?.guilds.findOne({ id: message.guild?.id });
-                    guild?.config.roles?.staff;
+                    event.send(guild?.config.roles?.staff!.join(' '));
                     break;
                 }
                 default: {
-                    event.send("valid subcommands are `add` and `remove`.");
+                    event.send("valid subcommands are `add`, `remove` and `list`.");
                 }
             }
         }
         catch (err) {
-
+            console.log(err);
         }
     }
 }

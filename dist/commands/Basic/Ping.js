@@ -17,7 +17,7 @@ class Ping extends Command_1.default {
             const ping = new discord_js_1.MessageEmbed()
                 .addField(`:hourglass: Response time: `, `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
                 .addField(`:heartbeat: Bot ping: `, `${Math.round(event.client.ws.ping)}ms`, true);
-            msg.edit({ embed: ping });
+            msg.edit({ content: "", embed: ping });
         });
     }
 }

@@ -9,7 +9,7 @@ interface DatabaseConfig {
 
 export class Database {
     db!: Db;
-    constructor(protected config: DatabaseConfig) {}
+    constructor(protected config: DatabaseConfig) { }
 
     async connect() {
         const client = await connect(this.config.url, this.config.mongoOptions)

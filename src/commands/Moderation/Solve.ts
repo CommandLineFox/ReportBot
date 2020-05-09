@@ -4,8 +4,8 @@ import CommandEvent from "@command/CommandEvent";
 import { SolveReport } from "~/utils/Helpers";
 
 export default class Solve extends Command {
-    constructor () {
-        super({name: "Solve", triggers: ["approve", "solve"], description: "Generates a report on a specified user", group: Moderation});
+    constructor() {
+        super({ name: "Solve", triggers: ["approve", "solve"], description: "Generates a report on a specified user", group: Moderation });
     }
 
     async run(event: CommandEvent) {

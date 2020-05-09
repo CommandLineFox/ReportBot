@@ -4,7 +4,7 @@ import { Database } from "./Database";
 export async function SubmitReport(argument: string, message: Message, database: Database) {
     let channel;
     const guild = await database.guilds.findOne({ id: message.guild!.id });
-    
+
     const [user, reason, evidence] = argument.split('|');
     const id = guild?.reports.length;
     const report = {
@@ -22,9 +22,9 @@ export async function SubmitReport(argument: string, message: Message, database:
         .addField(`Staff`, report.staff)
         .addField(`Reason`, report.reason)
         .addField(`Evidence`, report.evidence);
-    
+
     channel = message.guild?.channels.cache.get(guild?.config.channels!.submitted!);
-    (channel as TextChannel).send({ embed: embed})
+    (channel as TextChannel).send({ embed: embed })
         .then((msg) => {
             msg as Message;
             guild!.reports[report.id].message = msg.id;
@@ -47,9 +47,9 @@ export async function SolveReport(argument: string, message: Message, database: 
         .addField(`Evidence`, report.evidence)
         .addField(`Handled by`, message.author.tag)
         .setColor(`green`);
-    
+
     channel = message.guild?.channels.cache.get(guild?.config.channels?.handled!);
-    (channel as TextChannel).send({ embed: embed})
+    (channel as TextChannel).send({ embed: embed })
         .then((msg) => {
             msg as Message;
             guild!.reports[report.id].message = msg.id;

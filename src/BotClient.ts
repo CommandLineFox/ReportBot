@@ -10,29 +10,29 @@ export default class BotClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
     readonly database?: Database;
     lastDmAuthor?: User;
-    
+
     constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database?: Database, options?: ClientOptions) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            new CommandHandler (this)
+            new CommandHandler(this)
         });
     }
-    
+
     isMod(_member: GuildMember, _guild: Guild): boolean {
         let mod = false;
         return mod;
     }
 
     isAdmin(member: GuildMember): boolean {
-            return member.hasPermission("ADMINISTRATOR");
+        return member.hasPermission("ADMINISTRATOR");
     }
 
     isOwner(user: User): boolean {
         return this.config.owners.includes(user.id);
     }
-    
+
     getPrefix(guild?: Guild): string {
         if (guild) {
 
