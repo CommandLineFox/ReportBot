@@ -2,6 +2,7 @@ import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { MessageEmbed, TextChannel, Message } from "discord.js";
+import { Guild } from "@models/Guild";
 
 export default class Submit extends Command {
     constructor() {
@@ -12,11 +13,16 @@ export default class Submit extends Command {
         try {
             const message = event.message;
             const argument = event.argument;
-            const database = event.client.database;
+            const database = event.client.database!;
 
-            const guild = await database?.guilds.findOne({ id: message.guild!.id });
+            let guild = await database!.guilds.findOne({ id: event.guild.id });
+            if (!guild) {
+                const newguild = new Guild({ id: event.guild.id });
+                await database!.guilds.insertOne(newguild);
+                guild = await database!.guilds.findOne({ id: event.guild.id });
+            }
 
-            if (!guild?.config.channels?.submitted) {
+            if (!guild!.config.channels?.submitted) {
                 event.send("There is no specified channel for me to send reports to.");
                 return;
             }

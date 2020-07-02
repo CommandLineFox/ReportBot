@@ -47,7 +47,7 @@ export default class Config extends Command {
                                 event.reply("That role isn't a staff role");
                             }
                             else if (id && guild?.config.roles?.staff!.includes(id)) {
-                                guild?.config.roles!.staff = guild?.config.roles?.staff!.filter(role => role !== id)
+                                guild!.config.roles!.staff = guild?.config.roles?.staff!.filter(role => role !== id)
                             }
                         }
                         default: {
@@ -68,14 +68,14 @@ export default class Config extends Command {
                         case "set": {
                             const id = await event.guild.channels.cache.get(value)!.id;
                             if (id && guild?.config.channels?.submitted === id) {
-                                guild?.config.channels!.submitted = value;
+                                guild!.config.channels!.submitted = value;
                             }
                             else if (id && guild?.config.channels!.submitted === value) {
                                 event.reply("that channel is already selected.");
                             }
                         }
                         case "remove": {
-                            guild?.config.channels!.submitted = "";
+                            guild!.config.channels!.submitted = "";
                         }
                     }
                 }
@@ -92,14 +92,14 @@ export default class Config extends Command {
                         case "set": {
                             const id = event.guild.channels.cache.get(value)!.id;
                             if (id && guild?.config.channels?.handled === id) {
-                                guild?.config.channels!.handled = value;
+                                guild!.config.channels!.handled = value;
                             }
                             else if (id && guild?.config.channels!.handled === value) {
                                 event.reply("that channel is already selected.");
                             }
                         }
                         case "remove": {
-                            guild?.config.channels!.handled = "";
+                            guild!.config.channels!.handled = "";
                         }
                     }
                 }
@@ -109,7 +109,7 @@ export default class Config extends Command {
                         event.reply("that prefix is already set.");
                     }
                     else {
-                        guild?.config!.prefix = prefix;
+                        guild!.config!.prefix = prefix;
                     }
                 }
                 default: {
