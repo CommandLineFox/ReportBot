@@ -9,8 +9,8 @@ export default class Test extends Command {
 
     async run(event: CommandEvent) {
         const database = event.client.database;
-        
-        const staff = await database?.guilds.findOne({config: {roles: { staff: [..."705152765059530772"]}}});
+
+        const staff = await database?.guilds.findOne({ config: { staff: [..."705152765059530772"] } });
         console.log(staff);
     }
 }

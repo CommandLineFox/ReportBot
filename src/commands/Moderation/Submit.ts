@@ -22,7 +22,7 @@ export default class Submit extends Command {
                 guild = await database!.guilds.findOne({ id: event.guild.id });
             }
 
-            if (!guild!.config.channels?.submitted) {
+            if (!guild!.config.submitted) {
                 event.send("There is no specified channel for me to send reports to.");
                 return;
             }
@@ -56,7 +56,7 @@ export default class Submit extends Command {
                 .addField(`Reason`, reason)
                 .addField(`Evidence`, evidence);
 
-            channel = message.guild?.channels.cache.get(guild?.config.channels!.submitted!);
+            channel = message.guild?.channels.cache.get(guild?.config.submitted!);
             (channel as TextChannel).send({ embed: embed })
                 .then((msg) => {
                     msg as Message;

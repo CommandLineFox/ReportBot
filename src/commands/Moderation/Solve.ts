@@ -18,7 +18,7 @@ export default class Solve extends Command {
             const id = parseInt(argument.split(' ')[0]);
             const guild = await database!.guilds.findOne({ id: message.guild!.id });
             const report = guild?.reports.find(report => report.id === id)!;
-            const submitted = message.guild?.channels.cache.get(guild?.config.channels!.submitted!)
+            const submitted = message.guild?.channels.cache.get(guild?.config.submitted!)
             const oldreport = (submitted as TextChannel).messages.cache.get(report.message!);
 
             const embed = new MessageEmbed()
@@ -30,7 +30,7 @@ export default class Solve extends Command {
                 .addField(`Handled by`, message.author.tag)
                 .setColor(`green`);
 
-            channel = message.guild?.channels.cache.get(guild?.config.channels?.handled!);
+            channel = message.guild?.channels.cache.get(guild?.config.handled!);
             (channel as TextChannel).send({ embed: embed })
                 .then((msg) => {
                     msg as Message;

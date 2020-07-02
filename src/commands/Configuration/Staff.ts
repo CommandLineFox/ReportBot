@@ -32,7 +32,7 @@ export default class Staff extends Command {
                         event.send("Couldn't find the role.");
                         return;
                     }
-                    guild?.config.roles?.staff?.push(role.id);
+                    guild?.config.staff?.push(role.id);
                     await database?.guilds.updateOne({
                         id: message.guild?.id
                     }, guild!)
@@ -60,12 +60,12 @@ export default class Staff extends Command {
                 }
                 case "list": {
                     const guild = await database?.guilds.findOne({ id: message.guild?.id });
-                    if (guild?.config.roles?.staff!.length === 0) {
+                    if (guild?.config.staff!.length === 0) {
                         event.send("There are no staff roles.");
                         return;
                     }
                     let result = "";
-                    guild?.config.roles?.staff!.forEach((id) => {
+                    guild?.config.staff!.forEach((id) => {
                         result = `${result}, ${message.guild?.roles.cache.get(id)!.name}`;
                     });
                     event.send(`The current staff roles are: ${result.slice(2)}`);

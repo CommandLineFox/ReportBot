@@ -10,19 +10,11 @@ export interface Report {
     message?: string;
 }
 
-export interface GuildChannels {
-    submitted: string;
-    handled: string;
-}
-
-export interface GuildRoles {
-    staff?: string[];
-}
-
 export interface GuildConfig {
     prefix?: string;
-    channels?: GuildChannels;
-    roles?: GuildRoles;
+    submitted?: string;
+    handled?: string;
+    staff?: string[];
 }
 
 export interface GuildDoc {
