@@ -11,7 +11,7 @@ class Config extends Command_1.default {
         super({ name: "Config", triggers: ["config", "cfg"], description: "", group: Groups_1.Configuration });
     }
     async run(event) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c;
         try {
             const database = event.client.database;
             const guild = await (database === null || database === void 0 ? void 0 : database.guilds.findOne({ id: event.guild.id }));
@@ -32,20 +32,20 @@ class Config extends Command_1.default {
                     switch (sub2) {
                         case "add": {
                             const id = await ((_a = event.guild.roles.cache.find(role => role.name.toLowerCase() === value.toLowerCase())) === null || _a === void 0 ? void 0 : _a.id);
-                            if (id && !((_b = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _b === void 0 ? void 0 : _b.staff.includes(id))) {
-                                (_d = (_c = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _c === void 0 ? void 0 : _c.staff) === null || _d === void 0 ? void 0 : _d.push(value);
+                            if (id && !(guild === null || guild === void 0 ? void 0 : guild.config.staff.includes(id))) {
+                                (_b = guild === null || guild === void 0 ? void 0 : guild.config.staff) === null || _b === void 0 ? void 0 : _b.push(value);
                             }
-                            else if (id && ((_e = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _e === void 0 ? void 0 : _e.staff.includes(id))) {
+                            else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.staff.includes(id))) {
                                 event.reply("that role is already a staff role.");
                             }
                         }
                         case "remove": {
-                            const id = await ((_f = event.guild.roles.cache.find(role => role.name.toLowerCase() === value)) === null || _f === void 0 ? void 0 : _f.id);
+                            const id = await ((_c = event.guild.roles.cache.find(role => role.name.toLowerCase() === value)) === null || _c === void 0 ? void 0 : _c.id);
                             if (!id) {
                                 event.reply("That role isn't a staff role");
                             }
-                            else if (id && ((_g = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _g === void 0 ? void 0 : _g.staff.includes(id))) {
-                                guild.config.roles.staff = (_h = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _h === void 0 ? void 0 : _h.staff.filter(role => role !== id);
+                            else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.staff.includes(id))) {
+                                guild.config.staff = guild === null || guild === void 0 ? void 0 : guild.config.staff.filter(role => role !== id);
                             }
                         }
                         default: {
@@ -63,15 +63,15 @@ class Config extends Command_1.default {
                     switch (sub2) {
                         case "set": {
                             const id = await event.guild.channels.cache.get(value).id;
-                            if (id && ((_j = guild === null || guild === void 0 ? void 0 : guild.config.channels) === null || _j === void 0 ? void 0 : _j.submitted) === id) {
-                                guild.config.channels.submitted = value;
+                            if (id && (guild === null || guild === void 0 ? void 0 : guild.config.submitted) === id) {
+                                guild.config.submitted = value;
                             }
-                            else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.channels.submitted) === value) {
+                            else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.submitted) === value) {
                                 event.reply("that channel is already selected.");
                             }
                         }
                         case "remove": {
-                            guild.config.channels.submitted = "";
+                            guild.config.submitted = "";
                         }
                     }
                 }
@@ -85,15 +85,15 @@ class Config extends Command_1.default {
                     switch (sub2) {
                         case "set": {
                             const id = event.guild.channels.cache.get(value).id;
-                            if (id && ((_k = guild === null || guild === void 0 ? void 0 : guild.config.channels) === null || _k === void 0 ? void 0 : _k.handled) === id) {
-                                guild.config.channels.handled = value;
+                            if (id && (guild === null || guild === void 0 ? void 0 : guild.config.handled) === id) {
+                                guild.config.handled = value;
                             }
-                            else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.channels.handled) === value) {
+                            else if (id && (guild === null || guild === void 0 ? void 0 : guild.config.handled) === value) {
                                 event.reply("that channel is already selected.");
                             }
                         }
                         case "remove": {
-                            guild.config.channels.handled = "";
+                            guild.config.handled = "";
                         }
                     }
                 }

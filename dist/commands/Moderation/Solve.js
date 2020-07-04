@@ -11,7 +11,7 @@ class Solve extends Command_1.default {
         super({ name: "Solve", triggers: ["approve", "solve"], description: "Generates a report on a specified user", group: Groups_1.Moderation });
     }
     async run(event) {
-        var _a, _b, _c;
+        var _a, _b;
         try {
             const message = event.message;
             const argument = event.argument;
@@ -20,7 +20,7 @@ class Solve extends Command_1.default {
             const id = parseInt(argument.split(' ')[0]);
             const guild = await database.guilds.findOne({ id: message.guild.id });
             const report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === id);
-            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild === null || guild === void 0 ? void 0 : guild.config.channels.submitted);
+            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild === null || guild === void 0 ? void 0 : guild.config.submitted);
             const oldreport = submitted.messages.cache.get(report.message);
             const embed = new discord_js_1.MessageEmbed()
                 .setTitle(`Case: ${report.id}`)
@@ -30,7 +30,7 @@ class Solve extends Command_1.default {
                 .addField(`Evidence`, report.evidence)
                 .addField(`Handled by`, message.author.tag)
                 .setColor(`green`);
-            channel = (_b = message.guild) === null || _b === void 0 ? void 0 : _b.channels.cache.get((_c = guild === null || guild === void 0 ? void 0 : guild.config.channels) === null || _c === void 0 ? void 0 : _c.handled);
+            channel = (_b = message.guild) === null || _b === void 0 ? void 0 : _b.channels.cache.get(guild === null || guild === void 0 ? void 0 : guild.config.handled);
             channel.send({ embed: embed })
                 .then((msg) => {
                 msg;

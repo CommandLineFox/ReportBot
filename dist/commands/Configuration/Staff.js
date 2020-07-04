@@ -11,7 +11,7 @@ class Staff extends Command_1.default {
         super({ name: "Staff", triggers: ["staff"], description: "Add or remove staff roles for the server", group: Groups_1.Configuration });
     }
     async run(event) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f;
         try {
             const message = event.message;
             const database = event.client.database;
@@ -31,20 +31,20 @@ class Staff extends Command_1.default {
                         event.send("Couldn't find the role.");
                         return;
                     }
-                    (_c = (_b = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _b === void 0 ? void 0 : _b.staff) === null || _c === void 0 ? void 0 : _c.push(role.id);
+                    (_b = guild === null || guild === void 0 ? void 0 : guild.config.staff) === null || _b === void 0 ? void 0 : _b.push(role.id);
                     await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({
-                        id: (_d = message.guild) === null || _d === void 0 ? void 0 : _d.id
+                        id: (_c = message.guild) === null || _c === void 0 ? void 0 : _c.id
                     }, guild).then(() => event.send(`${role === null || role === void 0 ? void 0 : role.name} is now a staff role.`)));
                     break;
                 }
                 case "remove": {
-                    const role = (_e = message.guild) === null || _e === void 0 ? void 0 : _e.roles.cache.find(role => role.name.toLowerCase() === args.toLowerCase());
+                    const role = (_d = message.guild) === null || _d === void 0 ? void 0 : _d.roles.cache.find(role => role.name.toLowerCase() === args.toLowerCase());
                     if (!role) {
                         event.send("Couldn't find the role.");
                         return;
                     }
                     await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({
-                        id: (_f = message.guild) === null || _f === void 0 ? void 0 : _f.id
+                        id: (_e = message.guild) === null || _e === void 0 ? void 0 : _e.id
                     }, {
                         "$pull": {
                             "config.roles.staff": {
@@ -55,13 +55,13 @@ class Staff extends Command_1.default {
                     break;
                 }
                 case "list": {
-                    const guild = await (database === null || database === void 0 ? void 0 : database.guilds.findOne({ id: (_g = message.guild) === null || _g === void 0 ? void 0 : _g.id }));
-                    if (((_h = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _h === void 0 ? void 0 : _h.staff.length) === 0) {
+                    const guild = await (database === null || database === void 0 ? void 0 : database.guilds.findOne({ id: (_f = message.guild) === null || _f === void 0 ? void 0 : _f.id }));
+                    if ((guild === null || guild === void 0 ? void 0 : guild.config.staff.length) === 0) {
                         event.send("There are no staff roles.");
                         return;
                     }
                     let result = "";
-                    (_j = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _j === void 0 ? void 0 : _j.staff.forEach((id) => {
+                    guild === null || guild === void 0 ? void 0 : guild.config.staff.forEach((id) => {
                         var _a;
                         result = `${result}, ${(_a = message.guild) === null || _a === void 0 ? void 0 : _a.roles.cache.get(id).name}`;
                     });

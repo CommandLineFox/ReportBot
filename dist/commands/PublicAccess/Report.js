@@ -6,15 +6,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
-class Submit extends Command_1.default {
+class Report extends Command_1.default {
     constructor() {
-        super({ name: "Submit", triggers: ["submit"], description: "Generates a report on a specified user", group: Groups_1.Moderation });
+        super({ name: "Report", triggers: ["report"], description: "Reports a specified user to staff", group: Groups_1.PublicAccess });
     }
     async run(event) {
         var _a;
         try {
             const message = event.message;
             const argument = event.argument;
+            if (argument.split('|').length != 2) {
+                event.send("Invalid arguments.");
+                return;
+            }
             const [user, reason, evidence] = argument.split('|');
             let channel;
             const embed = new discord_js_1.MessageEmbed()
@@ -30,5 +34,5 @@ class Submit extends Command_1.default {
         }
     }
 }
-exports.default = Submit;
-//# sourceMappingURL=Submit.js.map
+exports.default = Report;
+//# sourceMappingURL=Report.js.map

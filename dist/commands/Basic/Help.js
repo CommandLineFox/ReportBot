@@ -12,12 +12,22 @@ class Help extends Command_1.default {
         super({ name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Groups_1.Basic });
     }
     run(event) {
+        const client = event.client;
+        const author = event.author;
+        const member = event.member;
+        const guild = event.guild;
         const help = new discord_js_1.MessageEmbed()
             .setTitle("Here's the list of all my commands")
             .setColor("#61e096")
-            .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
+            .setFooter(`Requested by ${author.tag}`, author.displayAvatarURL());
         CommandRegistry_1.default.groups.forEach((group) => {
-            if (group.ownerOnly && !event.client.isOwner(event.author)) {
+            if (group.ownerOnly && !client.isOwner(event.author)) {
+                return;
+            }
+            else if (group.adminOnly && !client.isAdmin(member)) {
+                return;
+            }
+            else if (group.modOnly && !client.isMod(member, guild)) {
                 return;
             }
             const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);

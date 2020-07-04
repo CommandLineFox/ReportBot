@@ -3,19 +3,19 @@ import Group from "@command/Group";
 import Staff from "~/commands/Configuration/Staff";
 import Help from "@commands/Basic/Help";
 import Ping from "@commands/Basic/Ping";
-import Solve from "@commands/Moderation/Solve";
 import Submit from "@commands/Moderation/Submit";
 import Echo from "@commands/OwnerOnly/Echo";
 import Eval from "@commands/OwnerOnly/Eval";
 import LogOff from "@commands/OwnerOnly/LogOff";
 import Test from "~/commands/OwnerOnly/Test";
+import Report from "~/commands/PublicAccess/Report";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
         new Staff(),
         new Help(),
+        new Report(),
         new Ping(),
-        new Solve(),
         new Submit(),
         new Echo(),
         new Eval(),

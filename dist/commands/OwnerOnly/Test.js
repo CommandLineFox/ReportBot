@@ -11,7 +11,7 @@ class Test extends Command_1.default {
     }
     async run(event) {
         const database = event.client.database;
-        const staff = await (database === null || database === void 0 ? void 0 : database.guilds.findOne({ config: { roles: { staff: [..."705152765059530772"] } } }));
+        const staff = await (database === null || database === void 0 ? void 0 : database.guilds.findOne({ config: { staff: [..."705152765059530772"] } }));
         console.log(staff);
     }
 }
