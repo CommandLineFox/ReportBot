@@ -30,8 +30,9 @@ export default class Submit extends Command {
                 event.send("Invalid arguments.");
                 return;
             }
-            
+
             const [user, reason, evidence] = argument.split('|');
+
             /*let id = guild?.reports.length || 1;
             if (id !== 1) {
                 id += 1;
@@ -64,10 +65,12 @@ export default class Submit extends Command {
             channel = message.guild?.channels.cache.get(event.client.config.channels.submitted);
 
             (channel as TextChannel).send({ embed: embed })
-                /*.then((msg) => {
-                    msg as Message;
-                    guild!.reports[id].message = msg.id;
-                });*/
+            /*.then((msg) => {
+                msg as Message;
+                guild!.reports[id].message = msg.id;
+            });*/
+
+            event.message.delete();
         }
         catch (err) {
             console.log(err);

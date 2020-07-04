@@ -28,8 +28,8 @@ export default class Report extends Command {
                 .addField(`Evidence`, evidence);
 
             channel = message.guild?.channels.cache.get(event.client.config.channels.submitted);
-
-            (channel as TextChannel).send({ embed: embed })
+            (channel as TextChannel).send({ embed: embed });
+            event.message.delete();
         }
         catch (err) {
             console.log(err);
