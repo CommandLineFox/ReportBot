@@ -14,9 +14,14 @@ class BotClient extends discord_js_1.Client {
             new CommandHandler_1.default(this);
         });
     }
-    isMod(_member, _guild) {
-        let mod = false;
-        return mod;
+    isMod(member, _guild) {
+        let found = false;
+        member.roles.cache.forEach((role) => {
+            if (this.config.staff.includes(role.id)) {
+                found = true;
+            }
+        });
+        return found;
     }
     isAdmin(member) {
         return member.hasPermission("ADMINISTRATOR");
