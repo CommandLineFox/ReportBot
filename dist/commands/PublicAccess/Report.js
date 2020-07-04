@@ -23,7 +23,7 @@ class Report extends Command_1.default {
             let channel;
             const embed = new discord_js_1.MessageEmbed()
                 .addField(`User`, user)
-                .addField(`Staff`, message.author.tag)
+                .addField(`Reported by`, message.author.tag)
                 .addField(`Reason`, reason)
                 .addField(`Evidence`, evidence);
             channel = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(event.client.config.channels.submitted);
