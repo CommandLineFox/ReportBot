@@ -20,9 +20,14 @@ export default class BotClient extends Client {
         });
     }
 
-    isMod(_member: GuildMember, _guild: Guild): boolean {
-        let mod = false;
-        return mod;
+    isMod(member: GuildMember, _guild: Guild): boolean {
+        let found = false;
+        member.roles.cache.forEach((role) => {
+            if (this.config.staff.includes(role.id)) {
+                found = true;
+            }
+        })
+        return found;
     }
 
     isAdmin(member: GuildMember): boolean {
