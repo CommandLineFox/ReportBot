@@ -2,7 +2,7 @@ import * as fs from "fs";
 import configTemplate from "~/Config";
 import { generateConfig, getConfig } from "~/ConfigHandler";
 import BotClient from "~/BotClient";
-import { Database } from "@utils/Database";
+//import { Database } from "@utils/Database";
 
 function main() {
     const configFile = "config.json";
@@ -22,9 +22,9 @@ function main() {
         return;
     }
 
-    const database = new Database(config.db);
-    database.connect();
-    const client = new BotClient(config, database);
+    //const database = new Database(config.db);
+    //database.connect();
+    const client = new BotClient(config);
     client.login(config.token);
 
     client.on("ready", () => {
