@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlexArcticFox/ReportBot.git"
+    "url": "git+https://github.com/aleksab02/ReportBot.git"
   },
   "author": "AlexArcticFox",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AlexArcticFox/ReportBot/issues"
+    "url": "https://github.com/aleksab02/ReportBot/issues"
   },
-  "homepage": "https://github.com/AlexArcticFox/ReportBot#readme"
+  "homepage": "https://github.com/aleksab02/ReportBot#readme"
 }
