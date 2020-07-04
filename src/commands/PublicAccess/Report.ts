@@ -16,14 +16,14 @@ export default class Report extends Command {
                 event.send("Invalid arguments.");
                 return;
             }
-            
+
             const [user, reason, evidence] = argument.split('|');
 
             let channel;
 
             const embed = new MessageEmbed()
                 .addField(`User`, user)
-                .addField(`Staff`, message.author.tag)
+                .addField(`Reported by`, message.author.tag)
                 .addField(`Reason`, reason)
                 .addField(`Evidence`, evidence);
 
