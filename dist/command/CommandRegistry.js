@@ -10,7 +10,6 @@ const Submit_1 = __importDefault(require("../commands/Moderation/Submit"));
 const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
 const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
 const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
-const Test_1 = __importDefault(require("../commands/OwnerOnly/Test"));
 const Report_1 = __importDefault(require("../commands/PublicAccess/Report"));
 class CommandRegistry {
     constructor() {
@@ -22,8 +21,7 @@ class CommandRegistry {
             new Submit_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
-            new LogOff_1.default(),
-            new Test_1.default()
+            new LogOff_1.default()
         ];
         this.groups = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
     }
