@@ -26,6 +26,11 @@ export default class Submit extends Command {
                 return;
             }*/
 
+            if (argument.split('|').length != 3) {
+                event.send("Invalid arguments.");
+                return;
+            }
+            
             const [user, reason, evidence] = argument.split('|');
             /*let id = guild?.reports.length || 1;
             if (id !== 1) {

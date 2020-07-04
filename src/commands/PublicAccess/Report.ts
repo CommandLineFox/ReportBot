@@ -12,10 +12,11 @@ export default class Report extends Command {
         try {
             const message = event.message;
             const argument = event.argument;
-            if (argument.split('|').length != 2) {
+            if (argument.split('|').length != 3) {
                 event.send("Invalid arguments.");
                 return;
             }
+            
             const [user, reason, evidence] = argument.split('|');
 
             let channel;

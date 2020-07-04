@@ -15,6 +15,10 @@ class Submit extends Command_1.default {
         try {
             const message = event.message;
             const argument = event.argument;
+            if (argument.split('|').length != 3) {
+                event.send("Invalid arguments.");
+                return;
+            }
             const [user, reason, evidence] = argument.split('|');
             let channel;
             const embed = new discord_js_1.MessageEmbed()
