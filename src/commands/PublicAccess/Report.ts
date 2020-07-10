@@ -12,14 +12,17 @@ export default class Report extends Command {
         try {
             const message = event.message;
             const argument = event.argument;
+            const channel = event.channel;
+
             if (argument.split('|').length != 3) {
-                event.send("Invalid arguments.");
+                channel.send("Invalid arguments.")
+                    .then((msg) => {
+                        setTimeout(() => { msg.delete() }, 5000);
+                    })
+                message.delete();
                 return;
             }
-
             const [user, reason, evidence] = argument.split('|');
-
-            let channel;
 
             const embed = new MessageEmbed()
                 .addField(`User`, user)
@@ -27,9 +30,9 @@ export default class Report extends Command {
                 .addField(`Reason`, reason)
                 .addField(`Evidence`, evidence);
 
-            channel = message.guild?.channels.cache.get(event.client.config.channels.submitted);
-            (channel as TextChannel).send({ embed: embed });
-            event.message.delete();
+            const submitted = message.guild?.channels.cache.get(event.client.config.channels.submitted);
+            (submitted as TextChannel).send({ embed: embed });
+            message.delete();
         }
         catch (err) {
             console.log(err);

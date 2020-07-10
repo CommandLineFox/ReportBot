@@ -1,6 +1,5 @@
 import Command from "@command/Command";
 import Group from "@command/Group";
-import Staff from "~/commands/Configuration/Staff";
 import Help from "@commands/Basic/Help";
 import Ping from "@commands/Basic/Ping";
 import Submit from "@commands/Moderation/Submit";
@@ -11,7 +10,6 @@ import Report from "~/commands/PublicAccess/Report";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
-        new Staff(),
         new Help(),
         new Report(),
         new Ping(),

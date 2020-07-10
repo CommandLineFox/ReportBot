@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Staff_1 = __importDefault(require("../commands/Configuration/Staff"));
 const Help_1 = __importDefault(require("../commands/Basic/Help"));
 const Ping_1 = __importDefault(require("../commands/Basic/Ping"));
 const Submit_1 = __importDefault(require("../commands/Moderation/Submit"));
@@ -14,7 +13,6 @@ const Report_1 = __importDefault(require("../commands/PublicAccess/Report"));
 class CommandRegistry {
     constructor() {
         this.commands = [
-            new Staff_1.default(),
             new Help_1.default(),
             new Report_1.default(),
             new Ping_1.default(),

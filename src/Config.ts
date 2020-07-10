@@ -7,7 +7,8 @@ export default {
     staff: array(base.string),
     channels: object({
         submitted: string(""),
-        handled: string("")
+        handled: string(""),
+        staffsubmitted: string("")
     }),
     db: object({
         name: string(""),
