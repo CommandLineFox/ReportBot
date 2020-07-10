@@ -30,8 +30,8 @@ class Submit extends Command_1.default {
                 .addField(`Staff`, message.author.tag)
                 .addField(`Reason`, reason)
                 .addField(`Evidence`, evidence);
-            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(event.client.config.channels.submitted);
-            submitted.send({ embed: embed });
+            const staffsubmitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(event.client.config.channels.staffsubmitted);
+            staffsubmitted.send({ embed: embed });
             message.delete();
         }
         catch (err) {
