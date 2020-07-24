@@ -9,7 +9,8 @@ exports.default = {
     channels: ConfigHandler_1.object({
         submitted: ConfigHandler_1.string(""),
         handled: ConfigHandler_1.string(""),
-        staffsubmitted: ConfigHandler_1.string("")
+        staffsubmitted: ConfigHandler_1.string(""),
+        suggestions: ConfigHandler_1.array(ConfigHandler_1.base.string)
     }),
     db: ConfigHandler_1.object({
         name: ConfigHandler_1.string(""),
