@@ -3,6 +3,7 @@ import configTemplate from "~/Config";
 import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
 import { Database } from "@utils/Database";
+import { EventHandler } from "./event/EventHandler";
 
 type configTemplate = typeof configTemplate;
 
@@ -17,6 +18,7 @@ export default class BotClient extends Client {
         this.database = database;
         this.once("ready", () => {
             new CommandHandler(this)
+            EventHandler(this)
         });
     }
 

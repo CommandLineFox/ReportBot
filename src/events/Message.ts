@@ -8,7 +8,7 @@ export const event = new Event("message", async (_client: BotClient, message: Me
     }
 
     if (_client.config.channels.suggestions.includes(message.channel.id)) {
-        await message.react("✅");
-        await message.react("❌");
+        message.react('✅');
+        message.react('❌');
     }
 })

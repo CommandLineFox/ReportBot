@@ -10,8 +10,8 @@ exports.event = new Event_1.default("message", async (_client, message) => {
         return;
     }
     if (_client.config.channels.suggestions.includes(message.channel.id)) {
-        await message.react("✅");
-        await message.react("❌");
+        message.react('✅');
+        message.react('❌');
     }
 });
 //# sourceMappingURL=Message.js.map
