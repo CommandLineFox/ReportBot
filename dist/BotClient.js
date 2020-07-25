@@ -19,7 +19,7 @@ class BotClient extends discord_js_1.Client {
     isMod(member, _guild) {
         let found = false;
         member.roles.cache.forEach((role) => {
-            if (this.config.staff.includes(role.id)) {
+            if (this.config.roles.staff.includes(role.id)) {
                 found = true;
             }
         });

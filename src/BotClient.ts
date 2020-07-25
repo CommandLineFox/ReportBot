@@ -25,7 +25,7 @@ export default class BotClient extends Client {
     isMod(member: GuildMember, _guild: Guild): boolean {
         let found = false;
         member.roles.cache.forEach((role) => {
-            if (this.config.staff.includes(role.id)) {
+            if (this.config.roles.staff.includes(role.id)) {
                 found = true;
             }
         })

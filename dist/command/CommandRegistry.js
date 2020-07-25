@@ -5,18 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Help_1 = __importDefault(require("../commands/Basic/Help"));
 const Ping_1 = __importDefault(require("../commands/Basic/Ping"));
-const Submit_1 = __importDefault(require("../commands/Moderation/Submit"));
 const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
 const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
 const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
-const Report_1 = __importDefault(require("../commands/PublicAccess/Report"));
+const Report_1 = __importDefault(require("../commands/Moderation/Report"));
 class CommandRegistry {
     constructor() {
         this.commands = [
             new Help_1.default(),
-            new Report_1.default(),
             new Ping_1.default(),
-            new Submit_1.default(),
+            new Report_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
             new LogOff_1.default()

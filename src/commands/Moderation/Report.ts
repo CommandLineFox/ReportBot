@@ -5,12 +5,14 @@ import { MessageEmbed, TextChannel } from "discord.js";
 
 export default class Report extends Command {
     constructor() {
-        super({ name: "Report", triggers: ["report"], description: "Reports a specified user to staff", group: PublicAccess });
+        super({ name: "Report", triggers: ["report", "submit"], description: "Reports a specified user to staff", group: PublicAccess });
     }
 
     async run(event: CommandEvent) {
         try {
+            const member = event.member;
             const message = event.message;
+            const guild = event.guild;
             const argument = event.argument;
             const channel = event.channel;
 
@@ -30,8 +32,11 @@ export default class Report extends Command {
                 .addField(`Reason`, reason)
                 .addField(`Evidence`, evidence);
 
-            const submitted = message.guild?.channels.cache.get(event.client.config.channels.submitted);
-            (submitted as TextChannel).send({ embed: embed });
+            const endpoint = (event.client.isMod(member, guild) || event.client.isAdmin(member)) ?
+                guild?.channels.cache.get(event.client.config.channels.staffsubmitted) :
+                guild?.channels.cache.get(event.client.config.channels.submitted);
+
+            (endpoint as TextChannel).send({ embed: embed });
             message.delete();
         }
         catch (err) {

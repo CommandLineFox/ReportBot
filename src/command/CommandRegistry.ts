@@ -2,18 +2,16 @@ import Command from "@command/Command";
 import Group from "@command/Group";
 import Help from "@commands/Basic/Help";
 import Ping from "@commands/Basic/Ping";
-import Submit from "@commands/Moderation/Submit";
 import Echo from "@commands/OwnerOnly/Echo";
 import Eval from "@commands/OwnerOnly/Eval";
 import LogOff from "@commands/OwnerOnly/LogOff";
-import Report from "~/commands/PublicAccess/Report";
+import Report from "@commands/Moderation/Report";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
         new Help(),
-        new Report(),
         new Ping(),
-        new Submit(),
+        new Report(),
         new Echo(),
         new Eval(),
         new LogOff()
