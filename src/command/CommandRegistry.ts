@@ -6,12 +6,14 @@ import Echo from "@commands/OwnerOnly/Echo";
 import Eval from "@commands/OwnerOnly/Eval";
 import LogOff from "@commands/OwnerOnly/LogOff";
 import Report from "@commands/Moderation/Report";
+import Role from "@commands/Moderation/Role";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
         new Help(),
         new Ping(),
         new Report(),
+        new Role(),
         new Echo(),
         new Eval(),
         new LogOff()

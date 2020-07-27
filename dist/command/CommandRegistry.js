@@ -9,12 +9,14 @@ const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
 const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
 const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
 const Report_1 = __importDefault(require("../commands/Moderation/Report"));
+const Role_1 = __importDefault(require("../commands/Moderation/Role"));
 class CommandRegistry {
     constructor() {
         this.commands = [
             new Help_1.default(),
             new Ping_1.default(),
             new Report_1.default(),
+            new Role_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
             new LogOff_1.default()

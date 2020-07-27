@@ -20,7 +20,7 @@ export default class Role extends Command {
             const guild = event.guild;
             const client = event.client;
 
-            if (rolename.toLowerCase() !== "vip" && rolename.toLowerCase !== "mvp") {
+            if (rolename.toLowerCase() !== "vip" && rolename.toLowerCase() !== "mvp") {
                 channel.send("Invalid arguments.")
                     .then((msg) => {
                         setTimeout(() => { msg.delete() }, 5000);
@@ -44,9 +44,13 @@ export default class Role extends Command {
             switch (subcommand.toLowerCase()) {
                 case "add": {
                     member.roles.add(role);
+                    event.send(`Added ${role?.name} to ${member.user.tag}`);
+                    break;
                 }
                 case "remove": {
                     member.roles.remove(role);
+                    event.send(`Removed ${role?.name} from ${member.user.tag}`);
+                    break;
                 }
             }
         }
