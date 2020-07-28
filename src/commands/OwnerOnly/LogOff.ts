@@ -8,6 +8,7 @@ export default class LogOff extends Command {
     }
 
     async run(event: CommandEvent) {
-        event.client.destroy();
+        event.message.delete();
+        process.exit();
     }
 }
