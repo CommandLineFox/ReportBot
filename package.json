@@ -7,14 +7,14 @@
     "@types/deep-equal": "^1.0.1",
     "@types/mongodb": "^3.5.25",
     "@types/ws": "^7.2.6",
-    "bson": "^4.0.4",
+    "bson": "^4.1.0",
     "deep-equal": "^2.0.3",
     "discord.js": "^12.2.0",
     "eslint": "^6.8.0",
-    "mongodb": "^3.5.9",
+    "mongodb": "^3.6.0",
     "tscpaths": "^0.0.9",
-    "typescript": "^3.9.6",
-    "ws": "^7.3.0"
+    "typescript": "^3.9.7",
+    "ws": "^7.3.1"
   },
   "devDependencies": {},
   "scripts": {
@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aleksab02/ReportBot.git"
+    "url": "git+https://github.com/AlexArcticFox/ReportBot.git"
   },
   "author": "AlexArcticFox",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/aleksab02/ReportBot/issues"
+    "url": "https://github.com/AlexArcticFox/ReportBot/issues"
   },
-  "homepage": "https://github.com/aleksab02/ReportBot#readme"
+  "homepage": "https://github.com/AlexArcticFox/ReportBot#readme"
 }

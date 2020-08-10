@@ -10,6 +10,7 @@ exports.default = {
         suggestions: ConfigHandler_1.array(ConfigHandler_1.base.string)
     }),
     roles: ConfigHandler_1.object({
+        member: ConfigHandler_1.string(""),
         vip: ConfigHandler_1.string(""),
         mvp: ConfigHandler_1.string(""),
         staff: ConfigHandler_1.array(ConfigHandler_1.base.string)

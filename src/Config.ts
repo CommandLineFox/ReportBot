@@ -9,6 +9,7 @@ export default {
         suggestions: array(base.string)
     }),
     roles: object({
+        member: string(""),
         vip: string(""),
         mvp: string(""),
         staff: array(base.string)
