@@ -7,6 +7,7 @@ import Eval from "@commands/OwnerOnly/Eval";
 import LogOff from "@commands/OwnerOnly/LogOff";
 import Report from "@commands/Moderation/Report";
 import Role from "@commands/Moderation/Role";
+import Test from "@commands/OwnerOnly/Test";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
@@ -16,7 +17,8 @@ class CommandRegistry {
         new Role(),
         new Echo(),
         new Eval(),
-        new LogOff()
+        new LogOff(),
+        new Test()
     ];
     readonly groups: ReadonlyArray<Group> = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
 

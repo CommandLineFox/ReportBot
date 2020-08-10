@@ -5,15 +5,15 @@ export interface Report {
     user: string;
     reason: string;
     evidence: string;
-    staff: string;
+    reporter: string;
     handled: boolean;
+    type: boolean;
     message?: string;
 }
 
 export interface GuildConfig {
     prefix?: string;
     submitted?: string;
-    handled?: string;
     staffsubmitted?: string;
     staff?: string[];
 }

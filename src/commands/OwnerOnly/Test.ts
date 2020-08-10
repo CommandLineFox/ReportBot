@@ -1,8 +1,7 @@
 import Command from "@command/Command";
 import { OwnerOnly } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { MessageEmbed, TextChannel, Message } from "discord.js";
-import { Guild } from "@models/Guild";
+import { TextChannel } from "discord.js";
 
 export default class Test extends Command {
     constructor() {
@@ -13,59 +12,31 @@ export default class Test extends Command {
         try {
             const message = event.message;
             const argument = event.argument;
-            const database = event.client.database!;
+            const client = event.client;
+            const database = client.database;
 
-            let guild = await database!.guilds.findOne({ id: event.guild.id });
-            if (!guild) {
-                const newguild = new Guild({ id: event.guild.id });
-                await database!.guilds.insertOne(newguild);
-                guild = await database!.guilds.findOne({ id: event.guild.id });
-            }
-
-            if (!guild!.config.submitted) {
-                event.send("There is no specified channel for me to send reports to.");
+            const id = parseInt(argument.split(' ')[0]);
+            const guild = await database!.guilds.findOne({ id: message.guild!.id });
+            const report = guild?.reports.find(report => report.id === id)!;
+            if (!report) {
+                event.send("The specified report doesn't exist");
                 return;
             }
+            
+            const submitted = message.guild?.channels.cache.get(client.config.channels.submitted);
+            const reportmessage = (submitted as TextChannel).messages.cache.get(report.message!);
+            console.log(reportmessage);
+            
+            /*const embed = new MessageEmbed()
+                .setTitle(`Case: ${report.id}`)
+                .addField(`User`, report.user)
+                .addField(`Reported by`, report.reporter)
+                .addField(`Reason`, report.reason)
+                .addField(`Evidence`, report.evidence)
+                .addField(`Handled by`, message.author.tag)
+                .setColor(`00FF00`);
 
-            const [user, reason, evidence] = argument.split('|');
-            let id = guild?.reports.length || 1;
-            if (id !== 1) {
-                id += 1;
-            }
-
-            let channel;
-            let msgid;
-
-            const embed = new MessageEmbed()
-                .setTitle(`Case: ${id}`)
-                .addField(`User`, user)
-                .addField(`Reported by`, message.author.tag)
-                .addField(`Reason`, reason)
-                .addField(`Evidence`, evidence);
-
-            channel = message.guild?.channels.cache.get(guild?.config.submitted!);
-            (channel as TextChannel).send({ embed: embed })
-                .then((msg) => {
-                    msg as Message;
-
-                    msgid = msg.id;
-                });
-
-            await database?.guilds.updateOne({
-                id: message.guild?.id
-            }, {
-                "$push": {
-                    reports: {
-                        id: id,
-                        user: user,
-                        reason: reason,
-                        evidence: evidence,
-                        staff: message.author.tag,
-                        handled: false,
-                        message: msgid
-                    }
-                }
-            })
+            reportmessage?.edit({ embed: embed });*/
         }
         catch (err) {
             console.log(err);

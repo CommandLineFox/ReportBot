@@ -6,14 +6,16 @@ export default {
     owners: array(base.string),
     channels: object({
         submitted: string(""),
-        handled: string(""),
-        staffsubmitted: string(""),
         suggestions: array(base.string)
     }),
     roles: object({
         vip: string(""),
         mvp: string(""),
         staff: array(base.string)
+    }),
+    colors: object({
+        staff: string(""),
+        member: string("")
     }),
     db: object({
         name: string(""),

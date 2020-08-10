@@ -26,6 +26,7 @@ const fs = __importStar(require("fs"));
 const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
 const BotClient_1 = __importDefault(require("./BotClient"));
+const Database_1 = require("./utils/Database");
 function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
@@ -40,7 +41,9 @@ function main() {
         console.info("Please use the above errors to fix your config before restarting the bot");
         return;
     }
-    const client = new BotClient_1.default(config);
+    const database = new Database_1.Database(config.db);
+    database.connect();
+    const client = new BotClient_1.default(config, database);
     client.login(config.token);
     client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`);

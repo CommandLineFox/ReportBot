@@ -20,17 +20,18 @@ export default class Solve extends Command {
             const report = guild?.reports.find(report => report.id === id)!;
             const submitted = message.guild?.channels.cache.get(guild?.config.submitted!)
             const oldreport = (submitted as TextChannel).messages.cache.get(report.message!);
-
+            
             const embed = new MessageEmbed()
                 .setTitle(`Case: ${report.id}`)
                 .addField(`User`, report.user)
-                .addField(`Staff`, report.staff)
+                .addField(`Reported by`, report.reporter)
                 .addField(`Reason`, report.reason)
                 .addField(`Evidence`, report.evidence)
                 .addField(`Handled by`, message.author.tag)
                 .setColor(`green`);
 
-            channel = message.guild?.channels.cache.get(guild?.config.handled!);
+            channel = message.guild?.channels.cache.get(guild?.config.submitted!);
+
             (channel as TextChannel).send({ embed: embed })
                 .then((msg) => {
                     msg as Message;

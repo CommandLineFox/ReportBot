@@ -25,12 +25,12 @@ class Solve extends Command_1.default {
             const embed = new discord_js_1.MessageEmbed()
                 .setTitle(`Case: ${report.id}`)
                 .addField(`User`, report.user)
-                .addField(`Staff`, report.staff)
+                .addField(`Reported by`, report.reporter)
                 .addField(`Reason`, report.reason)
                 .addField(`Evidence`, report.evidence)
                 .addField(`Handled by`, message.author.tag)
                 .setColor(`green`);
-            channel = (_b = message.guild) === null || _b === void 0 ? void 0 : _b.channels.cache.get(guild === null || guild === void 0 ? void 0 : guild.config.handled);
+            channel = (_b = message.guild) === null || _b === void 0 ? void 0 : _b.channels.cache.get(guild === null || guild === void 0 ? void 0 : guild.config.submitted);
             channel.send({ embed: embed })
                 .then((msg) => {
                 msg;
