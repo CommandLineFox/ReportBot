@@ -10,18 +10,18 @@ const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
 const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
 const Report_1 = __importDefault(require("../commands/Moderation/Report"));
 const Role_1 = __importDefault(require("../commands/Moderation/Role"));
-const Test_1 = __importDefault(require("../commands/OwnerOnly/Test"));
+const Solve_1 = __importDefault(require("../commands/Moderation/Solve"));
 class CommandRegistry {
     constructor() {
         this.commands = [
             new Help_1.default(),
             new Ping_1.default(),
             new Report_1.default(),
+            new Solve_1.default(),
             new Role_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
-            new LogOff_1.default(),
-            new Test_1.default()
+            new LogOff_1.default()
         ];
         this.groups = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
     }

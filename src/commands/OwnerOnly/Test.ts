@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { OwnerOnly } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { TextChannel } from "discord.js";
+import { TextChannel, MessageEmbed } from "discord.js";
 
 export default class Test extends Command {
     constructor() {
@@ -24,10 +24,9 @@ export default class Test extends Command {
             }
             
             const submitted = message.guild?.channels.cache.get(client.config.channels.submitted);
-            const reportmessage = (submitted as TextChannel).messages.cache.get(report.message!);
-            console.log(reportmessage);
+            const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
             
-            /*const embed = new MessageEmbed()
+            const embed = new MessageEmbed()
                 .setTitle(`Case: ${report.id}`)
                 .addField(`User`, report.user)
                 .addField(`Reported by`, report.reporter)
@@ -36,7 +35,7 @@ export default class Test extends Command {
                 .addField(`Handled by`, message.author.tag)
                 .setColor(`00FF00`);
 
-            reportmessage?.edit({ embed: embed });*/
+            reportmessage?.edit({ embed: embed });
         }
         catch (err) {
             console.log(err);
