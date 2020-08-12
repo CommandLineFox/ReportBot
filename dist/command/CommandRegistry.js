@@ -11,6 +11,7 @@ const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
 const Report_1 = __importDefault(require("../commands/Moderation/Report"));
 const Role_1 = __importDefault(require("../commands/Moderation/Role"));
 const Solve_1 = __importDefault(require("../commands/Moderation/Solve"));
+const Reopen_1 = __importDefault(require("../commands/Moderation/Reopen"));
 class CommandRegistry {
     constructor() {
         this.commands = [
@@ -19,6 +20,7 @@ class CommandRegistry {
             new Report_1.default(),
             new Role_1.default(),
             new Solve_1.default(),
+            new Reopen_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
             new LogOff_1.default()

@@ -8,6 +8,7 @@ import LogOff from "@commands/OwnerOnly/LogOff";
 import Report from "@commands/Moderation/Report";
 import Role from "@commands/Moderation/Role";
 import Solve from "@commands/Moderation/Solve";
+import Reopen from "@commands/Moderation/Reopen";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
@@ -16,6 +17,7 @@ class CommandRegistry {
         new Report(),
         new Role(),
         new Solve(),
+        new Reopen(),
         new Echo(),
         new Eval(),
         new LogOff()
