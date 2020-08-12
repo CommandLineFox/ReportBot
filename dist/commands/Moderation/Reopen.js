@@ -36,8 +36,7 @@ class Reopen extends Command_1.default {
                 .addField(`User`, report.user)
                 .addField(`Reported by`, report.reporter)
                 .addField(`Reason`, report.reason)
-                .addField(`Evidence`, report.evidence)
-                .addField(`Handled by`, message.author.tag);
+                .addField(`Evidence`, report.evidence);
             if (report.type) {
                 embed.setColor("FF00FF");
             }
