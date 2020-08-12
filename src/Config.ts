@@ -14,10 +14,6 @@ export default {
         mvp: string(""),
         staff: array(base.string)
     }),
-    colors: object({
-        staff: string(""),
-        member: string("")
-    }),
     db: object({
         name: string(""),
         url: string(""),

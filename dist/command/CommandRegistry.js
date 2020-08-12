@@ -17,8 +17,8 @@ class CommandRegistry {
             new Help_1.default(),
             new Ping_1.default(),
             new Report_1.default(),
-            new Solve_1.default(),
             new Role_1.default(),
+            new Solve_1.default(),
             new Echo_1.default(),
             new Eval_1.default(),
             new LogOff_1.default()

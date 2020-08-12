@@ -14,8 +14,8 @@ class CommandRegistry {
         new Help(),
         new Ping(),
         new Report(),
-        new Solve(),
         new Role(),
+        new Solve(),
         new Echo(),
         new Eval(),
         new LogOff()

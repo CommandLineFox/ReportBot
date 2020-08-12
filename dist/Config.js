@@ -15,10 +15,6 @@ exports.default = {
         mvp: ConfigHandler_1.string(""),
         staff: ConfigHandler_1.array(ConfigHandler_1.base.string)
     }),
-    colors: ConfigHandler_1.object({
-        staff: ConfigHandler_1.string(""),
-        member: ConfigHandler_1.string("")
-    }),
     db: ConfigHandler_1.object({
         name: ConfigHandler_1.string(""),
         url: ConfigHandler_1.string(""),

@@ -3,9 +3,9 @@ import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { TextChannel, MessageEmbed } from "discord.js";
 
-export default class Solve extends Command {
+export default class Reopen extends Command {
     constructor() {
-        super({ name: "Solve", triggers: ["approve", "solve"], description: "Marks a specified report as handled", group: Moderation });
+        super({ name: "Reopen", triggers: ["reopen", "open"], description: "Reopens the specified solved report", group: Moderation });
     }
 
     async run(event: CommandEvent) {
@@ -22,11 +22,11 @@ export default class Solve extends Command {
                 event.send("The specified report doesn't exist.");
                 return;
             }
-            if (report.handled) {
-                event.send("The specified report has already been handled.");
+            if (!report.handled) {
+                event.send("The specified report hasn't been handled yet.");
                 return;
             }
-            database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.handled": true } })
+            database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.handled": false } })
 
             const submitted = message.guild?.channels.cache.get(client.config.channels.submitted);
             const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
@@ -38,10 +38,16 @@ export default class Solve extends Command {
                 .addField(`Reason`, report.reason)
                 .addField(`Evidence`, report.evidence)
                 .addField(`Handled by`, message.author.tag)
-                .setColor(`00FF00`);
+
+            if (report.type) {
+                embed.setColor("FF00FF");
+            }
+            else {
+                embed.setColor("0000FF");
+            }
 
             reportmessage?.edit({ embed: embed });
-            event.send(`Successfully solved case ${report.id}`);
+            event.send(`Successfully reopened case ${report.id}`);
         }
         catch (err) {
             console.log(err);
