@@ -12,11 +12,13 @@ const Report_1 = __importDefault(require("../commands/Moderation/Report"));
 const Role_1 = __importDefault(require("../commands/Moderation/Role"));
 const Solve_1 = __importDefault(require("../commands/Moderation/Solve"));
 const Reopen_1 = __importDefault(require("../commands/Moderation/Reopen"));
+const Edit_1 = __importDefault(require("../commands/Moderation/Edit"));
 class CommandRegistry {
     constructor() {
         this.commands = [
             new Help_1.default(),
             new Ping_1.default(),
+            new Edit_1.default(),
             new Report_1.default(),
             new Role_1.default(),
             new Solve_1.default(),

@@ -9,11 +9,13 @@ import Report from "@commands/Moderation/Report";
 import Role from "@commands/Moderation/Role";
 import Solve from "@commands/Moderation/Solve";
 import Reopen from "@commands/Moderation/Reopen";
+import Edit from "@commands/Moderation/Edit";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
         new Help(),
         new Ping(),
+        new Edit(),
         new Report(),
         new Role(),
         new Solve(),

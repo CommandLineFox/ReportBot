@@ -23,7 +23,7 @@ class BotClient extends discord_js_1.Client {
                 found = true;
             }
         });
-        return found;
+        return found || this.isAdmin(member);
     }
     isAdmin(member) {
         return member.hasPermission("ADMINISTRATOR");

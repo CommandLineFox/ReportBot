@@ -29,7 +29,7 @@ export default class BotClient extends Client {
                 found = true;
             }
         })
-        return found;
+        return found || this.isAdmin(member);
     }
 
     isAdmin(member: GuildMember): boolean {
