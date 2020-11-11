@@ -48,8 +48,12 @@ class Edit extends Command_1.default {
                 }
             }
             guild = await database.guilds.findOne({ id: message.guild.id });
+            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+                event.send("The reports channel doesn't exist.");
+                return;
+            }
             report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === id);
-            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(client.config.channels.submitted);
+            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const reportmessage = await submitted.messages.fetch(report.message);
             const embed = new discord_js_1.MessageEmbed()
                 .setTitle(`Case: ${report.id}`)

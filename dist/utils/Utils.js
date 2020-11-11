@@ -1,133 +1,94 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.merge = exports.tagCheck = exports.nameCheck = exports.getArgument = exports.splitMessage = exports.checkForDuplicates = void 0;
-const deep_equal_1 = __importDefault(require("deep-equal"));
-const Errors_1 = require("./Errors");
-function checkForDuplicates(values, value, properties) {
-    values.forEach((element) => {
-        const duplicates = new Map();
-        properties.forEach((property) => {
-            let elementTree = element;
-            let valueTree = value;
-            const branches = property.split(".");
-            for (const branch of branches) {
-                if (elementTree instanceof Array && valueTree instanceof Array) {
-                    if (branch === "deep") {
-                        if (deep_equal_1.default(valueTree, elementTree)) {
-                            duplicates.set(property, valueTree);
-                        }
-                        return;
-                    }
-                }
-                if (typeof elementTree !== "object" || typeof valueTree !== "object") {
-                    return;
-                }
-                elementTree = elementTree[branch];
-                valueTree = valueTree[branch];
+exports.displayData = exports.databaseCheck = void 0;
+const discord_js_1 = require("discord.js");
+async function databaseCheck(database, guild, option) {
+    switch (option.toLowerCase()) {
+        case "roles": {
+            if (!guild.config.roles) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
             }
-            if (elementTree instanceof Array && valueTree instanceof Array) {
-                const arrayDuplicates = returnDuplicatedArray(elementTree, valueTree);
-                if (arrayDuplicates.length > 0) {
-                    duplicates.set(property, arrayDuplicates);
-                }
-            }
-            else if (deep_equal_1.default(valueTree, elementTree)) {
-                duplicates.set(property, valueTree);
-            }
-        });
-        if (duplicates.size > 0) {
-            throw new Errors_1.DuplicationError(duplicates);
-        }
-    });
-}
-exports.checkForDuplicates = checkForDuplicates;
-function returnDuplicatedArray(array1, array2) {
-    const arrayDuplicates = [];
-    for (const elementTreeElement of array1) {
-        if (array2.some((valueTreeElement) => deep_equal_1.default(elementTreeElement, valueTreeElement))) {
-            arrayDuplicates.push(elementTreeElement);
-        }
-    }
-    return arrayDuplicates;
-}
-async function splitMessage(message, converter) {
-    let valueString = "";
-    for (const char of message) {
-        if (char.trim() === "") {
             break;
         }
-        valueString += char;
-    }
-    const value = await Promise.resolve(converter(valueString));
-    if (value === undefined) {
-        return [undefined, message];
-    }
-    return [value, getArgument(message, valueString.length)];
-}
-exports.splitMessage = splitMessage;
-function getArgument(message, length) {
-    const argument = message.substring(length).trim();
-    if (argument === "") {
-        return undefined;
-    }
-    return argument;
-}
-exports.getArgument = getArgument;
-function nameCheck(message, list, checker) {
-    const iterator = message[Symbol.iterator]();
-    let currentIteration = iterator.next();
-    let name = "";
-    while (!currentIteration.done) {
-        const char = currentIteration.value;
-        currentIteration = iterator.next();
-        if (char === " ") {
-            const result = list.find((value) => checker(value, name));
-            if (result !== undefined) {
-                return [result, getArgument(message, name.length)];
+        case "staff": {
+            if (!guild.config.roles) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "staff": [] } } });
             }
+            else if (!guild.config.roles.staff) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.staff": [] } });
+            }
+            break;
         }
-        name += char;
-        if (name.length > 32) {
-            return [undefined, message];
+        case "channels": {
+            if (!guild.config.channels) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
+            }
+            break;
         }
     }
-    return [undefined, message];
 }
-exports.nameCheck = nameCheck;
-function tagCheck(message, list, checker) {
-    const iterator = message[Symbol.iterator]();
-    let currentIteration = iterator.next();
-    let tag = "";
-    while (!currentIteration.done) {
-        const char = currentIteration.value;
-        currentIteration = iterator.next();
-        tag += char;
-        if (char === "#") {
-            for (let i = 0; i < 4; i++) {
-                if (currentIteration.done) {
-                    return [undefined, message];
+exports.databaseCheck = databaseCheck;
+async function displayData(event, guild, type, specific) {
+    var _a, _b;
+    const client = event.client;
+    const database = client.database;
+    if (!specific) {
+        switch (type.toLowerCase()) {
+            case "prefix": {
+                return (guild === null || guild === void 0 ? void 0 : guild.config.prefix) || client.config.prefix;
+            }
+            case "staff": {
+                const mods = (_a = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _a === void 0 ? void 0 : _a.staff;
+                if (!mods || mods.length === 0) {
+                    return "There is no moderator roles.";
                 }
-                tag += currentIteration.value;
-                currentIteration = iterator.next();
+                let list = "";
+                mods.forEach(async (mod) => {
+                    const role = event.guild.roles.cache.get(mod);
+                    if (!role) {
+                        await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } }));
+                    }
+                    else {
+                        list += `${role.name}\n`;
+                    }
+                });
+                return list;
             }
-            const result = list.find((value) => checker(value, name));
-            if (result === undefined) {
-                return [undefined, message];
-            }
-            return [result, getArgument(message, tag.length)];
-        }
-        if (tag.length > 32) {
-            return [undefined, message];
         }
     }
-    return [undefined, message];
+    else {
+        switch (type.toLowerCase()) {
+            case "prefix": {
+                event.send(`The prefix is currently set to \`${(guild === null || guild === void 0 ? void 0 : guild.config.prefix) || client.config.prefix}\``);
+                break;
+            }
+            case "staff": {
+                const mods = (_b = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _b === void 0 ? void 0 : _b.staff;
+                if (!mods || mods.length === 0) {
+                    event.send("There is no moderator roles.");
+                    return;
+                }
+                const embed = new discord_js_1.MessageEmbed()
+                    .setTitle("The following roles are moderator roles:")
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
+                let list = "";
+                mods.forEach(async (mod) => {
+                    const role = event.guild.roles.cache.get(mod);
+                    if (!role) {
+                        await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.staff": mod } }));
+                    }
+                    else {
+                        list += `${role.name}\n`;
+                    }
+                });
+                embed.setDescription(list);
+                event.send({ embed: embed });
+                break;
+            }
+        }
+    }
+    return;
 }
-exports.tagCheck = tagCheck;
-function merge(defaultValue, value) {
-    return { ...defaultValue, ...value };
-}
-exports.merge = merge;
+exports.displayData = displayData;
 //# sourceMappingURL=Utils.js.map

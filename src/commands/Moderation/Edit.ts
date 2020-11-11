@@ -24,8 +24,8 @@ export default class Edit extends Command {
             const segment = args.shift()!.trim();
             const value = args.join(' ');
 
-
             let guild = await database!.guilds.findOne({ id: message.guild!.id });
+
             let report = guild?.reports.find(report => report.id === id)!;
             if (!report) {
                 event.send("The specified report doesn't exist.");
@@ -51,10 +51,14 @@ export default class Edit extends Command {
             }
 
             guild = await database!.guilds.findOne({ id: message.guild!.id });
-            report = guild?.reports.find(report => report.id === id)!;
-            const submitted = message.guild?.channels.cache.get(client.config.channels.submitted);
-            const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
+            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+                event.send("The reports channel doesn't exist.");
+                return;
+            }
 
+            report = guild?.reports.find(report => report.id === id)!;
+            const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
+            const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
 
             const embed = new MessageEmbed()
                 .setTitle(`Case: ${report.id}`)

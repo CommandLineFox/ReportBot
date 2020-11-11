@@ -16,23 +16,45 @@ class BotClient extends discord_js_1.Client {
             EventHandler_1.EventHandler(this);
         });
     }
-    isMod(member, _guild) {
-        let found = false;
-        member.roles.cache.forEach((role) => {
-            if (this.config.roles.staff.includes(role.id)) {
-                found = true;
+    async isMod(member, guild) {
+        var _a, _b;
+        const guildmodel = await ((_a = this.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: guild.id }));
+        if (!guildmodel) {
+            return false || this.isAdmin(member);
+        }
+        const moderators = (_b = guildmodel.config.roles) === null || _b === void 0 ? void 0 : _b.staff;
+        if (!moderators) {
+            return false || this.isAdmin(member);
+        }
+        if (moderators.length === 0) {
+            return false || this.isAdmin(member);
+        }
+        let mod = false;
+        moderators.forEach(id => {
+            if (member.roles.cache.some(role => role.id === id)) {
+                mod = true;
             }
         });
-        return found || this.isAdmin(member);
+        return mod || this.isAdmin(member);
     }
     isAdmin(member) {
-        return member.hasPermission("ADMINISTRATOR");
+        if (member.permissions.has("ADMINISTRATOR")) {
+            return true;
+        }
+        return false;
     }
     isOwner(user) {
         return this.config.owners.includes(user.id);
     }
-    getPrefix(guild) {
+    async getPrefix(guild) {
         if (guild) {
+            let guilddb = await this.database.guilds.findOne({ id: guild.id });
+            if (!guilddb) {
+                return this.config.prefix;
+            }
+            if (guilddb.config.prefix) {
+                return guilddb.config.prefix;
+            }
         }
         return this.config.prefix;
     }

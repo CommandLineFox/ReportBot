@@ -25,6 +25,10 @@ class Report extends Command_1.default {
                 await database.guilds.insertOne(newguild);
                 guild = await database.guilds.findOne({ id: event.guild.id });
             }
+            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+                event.send("The reports channel doesn't exist.");
+                return;
+            }
             const [user, reason, evidence] = argument.split('|');
             let id = (guild === null || guild === void 0 ? void 0 : guild.reports.length) ? (guild === null || guild === void 0 ? void 0 : guild.reports.length) + 1 : 1;
             const type = (event.client.isMod(member, event.guild) || client.isAdmin(member)) ? true : false;
@@ -40,7 +44,7 @@ class Report extends Command_1.default {
             else {
                 embed.setColor("0000FF");
             }
-            const channel = (_a = event.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(client.config.channels.submitted);
+            const channel = (_a = event.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const msgid = (await channel.send({ embed: embed })).id;
             message.delete();
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({

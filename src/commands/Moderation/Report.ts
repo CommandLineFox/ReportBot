@@ -24,6 +24,11 @@ export default class Report extends Command {
                 guild = await database!.guilds.findOne({ id: event.guild.id });
             }
 
+            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+                event.send("The reports channel doesn't exist.");
+                return;
+            }
+
             const [user, reason, evidence] = argument.split('|');
             let id = (guild?.reports.length) ? guild?.reports.length + 1 : 1;
             const type = (event.client.isMod(member, event.guild) || client.isAdmin(member)) ? true : false;
@@ -42,7 +47,7 @@ export default class Report extends Command {
                 embed.setColor("0000FF");
             }
 
-            const channel = event.guild?.channels.cache.get(client.config.channels.submitted);
+            const channel = event.guild?.channels.cache.get(guild.config.channels.submitted);
             const msgid = (await (channel as TextChannel).send({ embed: embed })).id;
             message.delete();
 

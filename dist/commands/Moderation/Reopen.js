@@ -19,6 +19,10 @@ class Reopen extends Command_1.default {
             const database = client.database;
             const id = parseInt(argument.split(' ')[0]);
             const guild = await database.guilds.findOne({ id: message.guild.id });
+            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+                event.send("The reports channel doesn't exist.");
+                return;
+            }
             const report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === id);
             if (!report) {
                 event.send("The specified report doesn't exist.");
@@ -29,7 +33,7 @@ class Reopen extends Command_1.default {
                 return;
             }
             database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.handled": false } });
-            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(client.config.channels.submitted);
+            const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const reportmessage = await submitted.messages.fetch(report.message);
             const embed = new discord_js_1.MessageEmbed()
                 .setTitle(`Case: ${report.id}`)

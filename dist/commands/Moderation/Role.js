@@ -5,24 +5,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
-const ArgumentHandler_1 = __importDefault(require("../../command/ArgumentHandler"));
+const Guild_1 = require("../../models/Guild");
 class Role extends Command_1.default {
     constructor() {
         super({ name: "Role", triggers: ["role"], description: "Gives or takes a specified role from a specified user", group: Groups_1.Moderation });
     }
     async run(event) {
+        const client = event.client;
+        const database = client.database;
         try {
-            const args = await ArgumentHandler_1.default.getArguments(event, event.argument, "string", "member", "string");
-            if (!args) {
+            let guild = await database.guilds.findOne({ id: event.guild.id });
+            if (!guild) {
+                const newguild = new Guild_1.Guild({ id: event.guild.id });
+                await database.guilds.insertOne(newguild);
+                guild = await database.guilds.findOne({ id: event.guild.id });
+            }
+            const [subcommand, id, rolename] = event.argument.split(/\s+/);
+            const member = event.guild.members.cache.find(member => id === member.id || id === `<@${member.id}>` || id === `<@!${member.id}>` || id === member.user.username || id === member.user.tag);
+            if (!member) {
+                event.send("Couldn't find the user you're looking for");
                 return;
             }
-            const [subcommand, member, rolename] = args;
             const message = event.message;
             const channel = event.channel;
-            const guild = event.guild;
-            const client = event.client;
             if (rolename.toLowerCase() !== "vip" && rolename.toLowerCase() !== "mvp") {
-                channel.send("Invalid arguments.")
+                channel.send("Role name can only be VIP or MVP")
                     .then((msg) => {
                     setTimeout(() => { msg.delete(); }, 5000);
                 });
@@ -32,13 +39,17 @@ class Role extends Command_1.default {
             let role;
             switch (rolename.toLowerCase()) {
                 case "vip": {
-                    role = guild.roles.cache.find(role => role.id === client.config.roles.vip);
+                    role = event.guild.roles.cache.find(role => { var _a; return role.id === ((_a = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _a === void 0 ? void 0 : _a.vip); });
                     break;
                 }
                 case "mvp": {
-                    role = guild.roles.cache.find(role => role.id === client.config.roles.mvp);
+                    role = event.guild.roles.cache.find(role => role.id === (guild === null || guild === void 0 ? void 0 : guild.config.roles.mvp));
                     break;
                 }
+            }
+            if (!role) {
+                event.send("Couldn't find the role you're looking for");
+                return;
             }
             switch (subcommand.toLowerCase()) {
                 case "add": {

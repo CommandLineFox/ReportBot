@@ -17,18 +17,25 @@ export default class Reopen extends Command {
 
             const id = parseInt(argument.split(' ')[0]);
             const guild = await database!.guilds.findOne({ id: message.guild!.id });
+
+            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+                event.send("The reports channel doesn't exist.");
+                return;
+            }
+
             const report = guild?.reports.find(report => report.id === id)!;
             if (!report) {
                 event.send("The specified report doesn't exist.");
                 return;
             }
+            
             if (!report.handled) {
                 event.send("The specified report hasn't been handled yet.");
                 return;
             }
             database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.handled": false } })
 
-            const submitted = message.guild?.channels.cache.get(client.config.channels.submitted);
+            const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
             const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
 
             const embed = new MessageEmbed()

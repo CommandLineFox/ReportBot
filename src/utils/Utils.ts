@@ -1,166 +1,104 @@
-import deepEqual from "deep-equal";
-import { Collection } from "discord.js";
-import { DuplicationError } from "./Errors";
+import CommandEvent from "@command/CommandEvent";
+import { Guild } from "@models/Guild";
+import { Database } from "@utils/Database";
+import { DatabaseCheckOption, DisplayData } from "@utils/Types";
+import { MessageEmbed } from "discord.js";
 
-export function checkForDuplicates<T extends object>(values: T[], value: T, properties: string[]) {
-    values.forEach((element) => {
-        const duplicates: Map<string, any> = new Map();
-        properties.forEach((property) => {
-            let elementTree = element;
-            let valueTree = value;
-            const branches = property.split(".");
+export async function databaseCheck(database: Database, guild: Guild, option: DatabaseCheckOption) {
+    switch (option.toLowerCase()) {
+        case "roles": {
+            if (!guild.config.roles) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
+            }
+            break;
+        }
 
-            for (const branch of branches) {
-                if (elementTree instanceof Array && valueTree instanceof Array) {
-                    if (branch === "deep") {
-                        if (deepEqual(valueTree, elementTree)) {
-                            duplicates.set(property, valueTree);
-                        }
-                        return;
-                    }
+        case "staff": {
+            if (!guild.config.roles) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "staff": [] } } });
+            }
+
+            else if (!guild.config.roles!.staff) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.staff": [] } });
+            }
+            break;
+        }
+
+        case "channels": {
+            if (!guild.config.channels) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
+            }
+            break;
+        }
+    }
+}
+
+export async function displayData(event: CommandEvent, guild: Guild, type: DisplayData, specific?: boolean) {
+    const client = event.client;
+    const database = client.database;
+    if (!specific) {
+        switch (type.toLowerCase()) {
+            case "prefix": {
+                return guild?.config.prefix || client.config.prefix;
+            }
+
+            case "staff": {
+                const mods = guild?.config.roles?.staff;
+                if (!mods || mods.length === 0) {
+                    return "There is no moderator roles.";
                 }
 
-                if (typeof elementTree !== "object" || typeof valueTree !== "object") {
+                let list = "";
+                mods.forEach(async (mod) => {
+                    const role = event.guild.roles.cache.get(mod);
+                    if (!role) {
+                        await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } });
+                    }
+                    else {
+                        list += `${role.name}\n`;
+                    }
+                })
+
+                return list;
+            }
+        }
+    }
+    else {
+        switch (type.toLowerCase()) {
+            case "prefix": {
+                event.send(`The prefix is currently set to \`${guild?.config.prefix || client.config.prefix}\``);
+                break;
+            }
+
+            case "staff": {
+                const mods = guild?.config.roles?.staff;
+                if (!mods || mods.length === 0) {
+                    event.send("There is no moderator roles.");
                     return;
                 }
 
-                // @ts-ignore
-                elementTree = elementTree[branch];
+                const embed = new MessageEmbed()
+                    .setTitle("The following roles are moderator roles:")
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                // @ts-ignore
-                valueTree = valueTree[branch];
+                let list = "";
+                mods.forEach(async (mod) => {
+                    const role = event.guild.roles.cache.get(mod);
+                    if (!role) {
+                        await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.staff": mod } });
+                    }
+                    else {
+                        list += `${role.name}\n`;
+                    }
+                })
+
+                embed.setDescription(list);
+                event.send({ embed: embed });
+                break;
             }
-
-            if (elementTree instanceof Array && valueTree instanceof Array) {
-                const arrayDuplicates = returnDuplicatedArray(elementTree, valueTree);
-
-                if (arrayDuplicates.length > 0) {
-                    duplicates.set(property, arrayDuplicates);
-                }
-
-            }
-            else if (deepEqual(valueTree, elementTree)) {
-                duplicates.set(property, valueTree);
-            }
-        });
-
-        if (duplicates.size > 0) {
-            throw new DuplicationError(duplicates);
-        }
-    });
-}
-
-function returnDuplicatedArray(array1: any[], array2: any[]): any[] {
-    const arrayDuplicates = [];
-
-    for (const elementTreeElement of array1) {
-        if (array2.some((valueTreeElement) => deepEqual(elementTreeElement, valueTreeElement))) {
-            arrayDuplicates.push(elementTreeElement);
+            
         }
     }
-    return arrayDuplicates;
-}
-
-export async function splitMessage<T>(
-    message: string,
-    converter: (part: string) => T | Promise<T>,
-): Promise<[T?, string?]> {
-    let valueString = "";
-
-    for (const char of message) {
-        if (char.trim() === "") {
-            break;
-        }
-        valueString += char;
-    }
-
-    const value = await Promise.resolve(converter(valueString));
-
-    if (value === undefined) {
-        return [undefined, message];
-    }
-    return [value, getArgument(message, valueString.length)];
-}
-
-export function getArgument(message: string, length: number) {
-    const argument = message.substring(length).trim();
-    if (argument === "") {
-        return undefined;
-    }
-    return argument;
-}
-
-export function nameCheck<T>(
-    message: string,
-    list: T[] | Collection<any, T>,
-    checker: (value: T, name: string) => boolean,
-
-): [T?, string?] {
-    const iterator = message[Symbol.iterator]();
-    let currentIteration = iterator.next();
-    let name = "";
-
-    while (!currentIteration.done) {
-        const char = currentIteration.value;
-        currentIteration = iterator.next();
-
-        if (char === " ") {
-            // @ts-ignore
-            const result = list.find((value) => checker(value, name));
-            if (result !== undefined) {
-                return [result, getArgument(message, name.length)];
-            }
-        }
-
-        name += char;
-
-        if (name.length > 32) {
-            return [undefined, message];
-        }
-    }
-    return [undefined, message];
-}
-
-export function tagCheck<T>(
-    message: string,
-    list: T[] | Collection<any, T>,
-    checker: (value: T, tag: string) => boolean,
-): [T?, string?] {
-    const iterator = message[Symbol.iterator]();
-    let currentIteration = iterator.next();
-    let tag = "";
-
-    while (!currentIteration.done) {
-        const char = currentIteration.value;
-        currentIteration = iterator.next();
-        tag += char;
-
-        if (char === "#") {
-            for (let i = 0; i < 4; i++) {
-                if (currentIteration.done) {
-                    return [undefined, message];
-                }
-
-                tag += currentIteration.value;
-                currentIteration = iterator.next();
-            }
-
-            // @ts-ignore
-
-            const result = list.find((value) => checker(value, name));
-            if (result === undefined) {
-                return [undefined, message];
-            }
-            return [result, getArgument(message, tag.length)];
-        }
-
-        if (tag.length > 32) {
-            return [undefined, message];
-        }
-    }
-    return [undefined, message];
-}
-
-export function merge<T extends object>(defaultValue: Partial<T>, value: T): T {
-    return { ...defaultValue, ...value };
+    return;
 }

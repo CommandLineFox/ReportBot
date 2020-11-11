@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import ArgumentHandler from "@command/ArgumentHandler";
+import { Guild } from "@models/Guild";
 
 export default class Role extends Command {
     constructor() {
@@ -9,19 +9,29 @@ export default class Role extends Command {
     }
 
     async run(event: CommandEvent) {
+        const client = event.client;
+        const database = client.database;
         try {
-            const args = await ArgumentHandler.getArguments(event, event.argument, "string", "member", "string");
-            if (!args) {
+            let guild = await database!.guilds.findOne({ id: event.guild.id });
+            if (!guild) {
+                const newguild = new Guild({ id: event.guild.id });
+                await database!.guilds.insertOne(newguild);
+                guild = await database!.guilds.findOne({ id: event.guild.id });
+            }
+    
+            const [subcommand, id, rolename] = event.argument.split(/\s+/);
+            const member = event.guild.members.cache.find(member => id === member.id || id === `<@${member.id}>` || id === `<@!${member.id}>` || id === member.user.username || id === member.user.tag);
+
+            if (!member) {
+                event.send("Couldn't find the user you're looking for");
                 return;
             }
-            const [subcommand, member, rolename] = args;
+
             const message = event.message;
             const channel = event.channel;
-            const guild = event.guild;
-            const client = event.client;
 
             if (rolename.toLowerCase() !== "vip" && rolename.toLowerCase() !== "mvp") {
-                channel.send("Invalid arguments.")
+                channel.send("Role name can only be VIP or MVP")
                     .then((msg) => {
                         setTimeout(() => { msg.delete() }, 5000);
                     })
@@ -32,13 +42,18 @@ export default class Role extends Command {
             let role;
             switch (rolename.toLowerCase()) {
                 case "vip": {
-                    role = guild.roles.cache.find(role => role.id === client.config.roles.vip);
+                    role = event.guild.roles.cache.find(role => role.id === guild?.config.roles?.vip);
                     break;
                 }
                 case "mvp": {
-                    role = guild.roles.cache.find(role => role.id === client.config.roles.mvp);
+                    role = event.guild.roles.cache.find(role => role.id === guild?.config.roles!.mvp);
                     break;
                 }
+            }
+
+            if (!role) {
+                event.send("Couldn't find the role you're looking for");
+                return;
             }
 
             switch (subcommand.toLowerCase()) {
