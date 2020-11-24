@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
-const Guild_1 = require("../../models/Guild");
+const Utils_1 = require("../../utils/Utils");
 class Role extends Command_1.default {
     constructor() {
         super({ name: "Role", triggers: ["role"], description: "Gives or takes a specified role from a specified user", group: Groups_1.Moderation });
@@ -14,14 +14,9 @@ class Role extends Command_1.default {
         const client = event.client;
         const database = client.database;
         try {
-            let guild = await database.guilds.findOne({ id: event.guild.id });
-            if (!guild) {
-                const newguild = new Guild_1.Guild({ id: event.guild.id });
-                await database.guilds.insertOne(newguild);
-                guild = await database.guilds.findOne({ id: event.guild.id });
-            }
-            const [subcommand, id, rolename] = event.argument.split(/\s+/);
-            const member = event.guild.members.cache.find(member => id === member.id || id === `<@${member.id}>` || id === `<@!${member.id}>` || id === member.user.username || id === member.user.tag);
+            const guild = await client.getGuildFromDatabase(database, event.guild.id);
+            const [subcommand, id, rolename] = Utils_1.splitArguments(event.argument, 3);
+            const member = await client.getMember(id, event.guild);
             if (!member) {
                 event.send("Couldn't find the user you're looking for");
                 return;

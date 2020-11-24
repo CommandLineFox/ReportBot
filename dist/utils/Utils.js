@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.displayData = exports.databaseCheck = void 0;
+exports.splitArguments = exports.displayData = exports.databaseCheck = void 0;
 const discord_js_1 = require("discord.js");
 async function databaseCheck(database, guild, option) {
     switch (option.toLowerCase()) {
@@ -91,4 +91,26 @@ async function displayData(event, guild, type, specific) {
     return;
 }
 exports.displayData = displayData;
+function splitArguments(argument, amount) {
+    const args = [];
+    let element = "";
+    let index = 0;
+    while (index < argument.length) {
+        if (args.length < amount - 1) {
+            if (argument[index].match(/\s/)) {
+                if (element.trim().length > 0) {
+                    args.push(element.trim());
+                }
+                element = "";
+            }
+        }
+        element += argument[index];
+        index++;
+    }
+    if (element.trim().length > 0) {
+        args.push(element.trim());
+    }
+    return args;
+}
+exports.splitArguments = splitArguments;
 //# sourceMappingURL=Utils.js.map

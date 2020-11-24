@@ -2,7 +2,6 @@ import Command from "@command/Command";
 import { PublicAccess } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { MessageEmbed, TextChannel } from "discord.js";
-import { Guild } from "@models/Guild";
 
 export default class Report extends Command {
     constructor() {
@@ -17,13 +16,7 @@ export default class Report extends Command {
             const member = event.member;
             const client = event.client;
 
-            let guild = await database!.guilds.findOne({ id: event.guild.id });
-            if (!guild) {
-                const newguild = new Guild({ id: event.guild.id });
-                await database!.guilds.insertOne(newguild);
-                guild = await database!.guilds.findOne({ id: event.guild.id });
-            }
-
+            const guild = await client.getGuildFromDatabase(database!, event.guild.id);
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 event.send("The reports channel doesn't exist.");
                 return;

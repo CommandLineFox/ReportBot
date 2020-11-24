@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Config_1 = __importDefault(require("../commands/Administration/Config"));
 const Help_1 = __importDefault(require("../commands/Basic/Help"));
 const Ping_1 = __importDefault(require("../commands/Basic/Ping"));
 const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
@@ -18,6 +19,7 @@ class CommandRegistry {
         this.commands = [
             new Help_1.default(),
             new Ping_1.default(),
+            new Config_1.default(),
             new Edit_1.default(),
             new Report_1.default(),
             new Role_1.default(),

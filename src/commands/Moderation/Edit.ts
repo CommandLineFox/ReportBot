@@ -2,6 +2,7 @@ import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { TextChannel, MessageEmbed } from "discord.js";
+import { splitArguments } from "@utils/Utils";
 
 export default class Edit extends Command {
     constructor() {
@@ -19,44 +20,41 @@ export default class Edit extends Command {
             if (!args.length) {
                 return;
             }
+            
+            const [id, segment, value] = splitArguments(event.argument, 3);
+            let guild = await client.getGuildFromDatabase(database!, event.guild.id);
 
-            const id = parseInt(args.shift()!.trim());
-            const segment = args.shift()!.trim();
-            const value = args.join(' ');
-
-            let guild = await database!.guilds.findOne({ id: message.guild!.id });
-
-            let report = guild?.reports.find(report => report.id === id)!;
+            let report = guild?.reports.find(report => report.id === parseInt(id))!;
             if (!report) {
-                event.send("The specified report doesn't exist.");
+                await event.send("The specified report doesn't exist.");
                 return;
             }
 
             switch (segment.toLowerCase()) {
                 case "user": {
-                    database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.user": value } });
-                    event.send(`Successfully updated the user of case ${id}`);
+                    await database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.user": value } });
+                    await event.send(`Successfully updated the user of case ${id}`);
                     break;
                 }
                 case "reason": {
-                    database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.reason": value } });
-                    event.send(`Successfully updated the reason of case ${id}`);
+                    await database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.reason": value } });
+                    await event.send(`Successfully updated the reason of case ${id}`);
                     break;
                 }
                 case "evidence": {
-                    database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.evidence": value } });
-                    event.send(`Successfully updated the evidence of case ${id}`);
+                    await database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.evidence": value } });
+                    await event.send(`Successfully updated the evidence of case ${id}`);
                     break;
                 }
             }
 
             guild = await database!.guilds.findOne({ id: message.guild!.id });
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
-                event.send("The reports channel doesn't exist.");
+                await event.send("The reports channel doesn't exist.");
                 return;
             }
 
-            report = guild?.reports.find(report => report.id === id)!;
+            report = guild?.reports.find(report => report.id === parseInt(id))!;
             const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
             const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
 
@@ -74,7 +72,7 @@ export default class Edit extends Command {
                 embed.setColor("0000FF");
             }
 
-            reportmessage?.edit({ embed: embed });
+            await reportmessage?.edit({ embed: embed });
         }
         catch (err) {
             console.log(err);

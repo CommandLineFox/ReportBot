@@ -1,5 +1,6 @@
 import Command from "@command/Command";
 import Group from "@command/Group";
+import Config from "@commands/Administration/Config";
 import Help from "@commands/Basic/Help";
 import Ping from "@commands/Basic/Ping";
 import Echo from "@commands/OwnerOnly/Echo";
@@ -15,6 +16,7 @@ class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
         new Help(),
         new Ping(),
+        new Config(),
         new Edit(),
         new Report(),
         new Role(),

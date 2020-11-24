@@ -16,7 +16,7 @@ export default class Reopen extends Command {
             const database = client.database;
 
             const id = parseInt(argument.split(' ')[0]);
-            const guild = await database!.guilds.findOne({ id: message.guild!.id });
+            const guild = await client.getGuildFromDatabase(database!, event.guild.id);
 
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 event.send("The reports channel doesn't exist.");

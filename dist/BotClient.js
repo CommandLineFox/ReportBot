@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
 const EventHandler_1 = require("./event/EventHandler");
+const guild_1 = require("./models/guild");
 class BotClient extends discord_js_1.Client {
     constructor(config, database, options) {
         super(options);
@@ -15,6 +16,30 @@ class BotClient extends discord_js_1.Client {
             new CommandHandler_1.default(this);
             EventHandler_1.EventHandler(this);
         });
+    }
+    async getGuildFromDatabase(database, id) {
+        let guild = await database.guilds.findOne({ id: id });
+        if (!guild) {
+            const newGuild = new guild_1.Guild({ id: id });
+            await database.guilds.insertOne(newGuild);
+            guild = await database.guilds.findOne({ id: id });
+        }
+        return guild;
+    }
+    async getMember(argument, guild) {
+        if (!argument) {
+            return;
+        }
+        const regex = argument.match(/^((?<username>.+?)#(?<discrim>\d{4})|<?@?!?(?<id>\d{16,18})>?)$/);
+        if (regex && regex.groups) {
+            if (regex.groups.username) {
+                return (await guild.members.fetch({ query: regex.groups.username, limit: 1 })).first();
+            }
+            else if (regex.groups.id) {
+                return guild.members.fetch(regex.groups.id);
+            }
+        }
+        return (await guild.members.fetch({ query: argument, limit: 1 })).first();
     }
     async isMod(member, guild) {
         var _a, _b;

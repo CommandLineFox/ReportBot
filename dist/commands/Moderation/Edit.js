@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
+const Utils_1 = require("../../utils/Utils");
 class Edit extends Command_1.default {
     constructor() {
         super({ name: "Edit", triggers: ["edit", "change"], description: "Edits a part of the report", group: Groups_1.Moderation });
@@ -21,38 +22,36 @@ class Edit extends Command_1.default {
             if (!args.length) {
                 return;
             }
-            const id = parseInt(args.shift().trim());
-            const segment = args.shift().trim();
-            const value = args.join(' ');
-            let guild = await database.guilds.findOne({ id: message.guild.id });
-            let report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === id);
+            const [id, segment, value] = Utils_1.splitArguments(event.argument, 3);
+            let guild = await client.getGuildFromDatabase(database, event.guild.id);
+            let report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === parseInt(id));
             if (!report) {
-                event.send("The specified report doesn't exist.");
+                await event.send("The specified report doesn't exist.");
                 return;
             }
             switch (segment.toLowerCase()) {
                 case "user": {
-                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.user": value } });
-                    event.send(`Successfully updated the user of case ${id}`);
+                    await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.user": value } }));
+                    await event.send(`Successfully updated the user of case ${id}`);
                     break;
                 }
                 case "reason": {
-                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.reason": value } });
-                    event.send(`Successfully updated the reason of case ${id}`);
+                    await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.reason": value } }));
+                    await event.send(`Successfully updated the reason of case ${id}`);
                     break;
                 }
                 case "evidence": {
-                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.evidence": value } });
-                    event.send(`Successfully updated the evidence of case ${id}`);
+                    await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.evidence": value } }));
+                    await event.send(`Successfully updated the evidence of case ${id}`);
                     break;
                 }
             }
             guild = await database.guilds.findOne({ id: message.guild.id });
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
-                event.send("The reports channel doesn't exist.");
+                await event.send("The reports channel doesn't exist.");
                 return;
             }
-            report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === id);
+            report = guild === null || guild === void 0 ? void 0 : guild.reports.find(report => report.id === parseInt(id));
             const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const reportmessage = await submitted.messages.fetch(report.message);
             const embed = new discord_js_1.MessageEmbed()
@@ -67,7 +66,7 @@ class Edit extends Command_1.default {
             else {
                 embed.setColor("0000FF");
             }
-            reportmessage === null || reportmessage === void 0 ? void 0 : reportmessage.edit({ embed: embed });
+            await (reportmessage === null || reportmessage === void 0 ? void 0 : reportmessage.edit({ embed: embed }));
         }
         catch (err) {
             console.log(err);

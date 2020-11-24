@@ -3,7 +3,7 @@ import { Administration } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { Guild } from "@models/Guild";
 import { MessageEmbed } from "discord.js";
-import { databaseCheck, displayData } from "@utils/Utils";
+import { databaseCheck, displayData, splitArguments } from "@utils/Utils";
 
 export default class Config extends Command {
     constructor() {
@@ -13,15 +13,9 @@ export default class Config extends Command {
     async run(event: CommandEvent) {
         const client = event.client;
         const database = client.database;
-
-        let guild = await database!.guilds.findOne({ id: event.guild.id });
-        if (!guild) {
-            const newguild = new Guild({ id: event.guild.id });
-            await database!.guilds.insertOne(newguild);
-            guild = await database!.guilds.findOne({ id: event.guild.id });
-        }
-
-        const [subcommand, option, args] = event.argument.split(/\s+/);
+        
+        let guild = await client.getGuildFromDatabase(database!, event.guild.id);
+        const [subcommand, option, args] = splitArguments(event.argument, 3);
 
         if (!subcommand) {
             displayAllSettings(event, guild!)

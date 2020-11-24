@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
-const Guild_1 = require("../../models/Guild");
 class Report extends Command_1.default {
     constructor() {
         super({ name: "Report", triggers: ["report", "submit"], description: "Reports a specified user to staff", group: Groups_1.PublicAccess });
@@ -19,12 +18,7 @@ class Report extends Command_1.default {
             const database = event.client.database;
             const member = event.member;
             const client = event.client;
-            let guild = await database.guilds.findOne({ id: event.guild.id });
-            if (!guild) {
-                const newguild = new Guild_1.Guild({ id: event.guild.id });
-                await database.guilds.insertOne(newguild);
-                guild = await database.guilds.findOne({ id: event.guild.id });
-            }
+            const guild = await client.getGuildFromDatabase(database, event.guild.id);
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 event.send("The reports channel doesn't exist.");
                 return;

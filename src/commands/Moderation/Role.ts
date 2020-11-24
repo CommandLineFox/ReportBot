@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { Guild } from "@models/Guild";
+import { splitArguments } from "@utils/Utils";
 
 export default class Role extends Command {
     constructor() {
@@ -12,15 +12,9 @@ export default class Role extends Command {
         const client = event.client;
         const database = client.database;
         try {
-            let guild = await database!.guilds.findOne({ id: event.guild.id });
-            if (!guild) {
-                const newguild = new Guild({ id: event.guild.id });
-                await database!.guilds.insertOne(newguild);
-                guild = await database!.guilds.findOne({ id: event.guild.id });
-            }
-    
-            const [subcommand, id, rolename] = event.argument.split(/\s+/);
-            const member = event.guild.members.cache.find(member => id === member.id || id === `<@${member.id}>` || id === `<@!${member.id}>` || id === member.user.username || id === member.user.tag);
+            const guild = await client.getGuildFromDatabase(database!, event.guild.id);
+            const [subcommand, id, rolename] = splitArguments(event.argument, 3);
+            const member = await client.getMember(id, event.guild);
 
             if (!member) {
                 event.send("Couldn't find the user you're looking for");
