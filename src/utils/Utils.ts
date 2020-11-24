@@ -61,6 +61,10 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
 
                 return list;
             }
+
+            case "roles": {
+
+            }
         }
     }
     else {
@@ -97,7 +101,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                 event.send({ embed: embed });
                 break;
             }
-            
+
         }
     }
     return;
