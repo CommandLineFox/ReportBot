@@ -1,15 +1,15 @@
 import Command from "@command/Command";
-import { Basic } from "~/Groups";
+import {Basic} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { MessageEmbed } from "discord.js";
+import {MessageEmbed} from "discord.js";
 import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
-    constructor() {
-        super({ name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic });
+    public constructor() {
+        super({name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic});
     }
 
-    run(event: CommandEvent) {
+    public async run(event: CommandEvent): Promise<void> {
         const client = event.client;
         const author = event.author;
         const member = event.member;
@@ -22,13 +22,9 @@ export default class Help extends Command {
         CommandRegistry.groups.forEach((group) => {
             if (group.ownerOnly && !client.isOwner(event.author)) {
                 return;
-            }
-
-            else if (group.adminOnly && !client.isAdmin(member)) {
+            } else if (group.adminOnly && !client.isAdmin(member)) {
                 return;
-            }
-
-            else if (group.modOnly && !client.isMod(member, guild)) {
+            } else if (group.modOnly && !client.isMod(member, guild)) {
                 return;
             }
             const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
@@ -37,9 +33,9 @@ export default class Help extends Command {
                 return;
             }
 
-            help.addField(group.name, commands.join('\n'));
-        })
+            help.addField(group.name, commands.join("\n"));
+        });
 
-        event.send({ embed: help });
+        await event.send({embed: help});
     }
 }

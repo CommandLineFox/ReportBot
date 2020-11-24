@@ -13,7 +13,7 @@ import Reopen from "@commands/Moderation/Reopen";
 import Edit from "@commands/Moderation/Edit";
 
 class CommandRegistry {
-    readonly commands: ReadonlyArray<Command> = [
+    public readonly commands: readonly Command[] = [
         new Help(),
         new Ping(),
         new Config(),
@@ -26,13 +26,13 @@ class CommandRegistry {
         new Eval(),
         new LogOff()
     ];
-    readonly groups: ReadonlyArray<Group> = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
+    public readonly groups: readonly Group[] = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
 
-    getCommands(group: Group): ReadonlyArray<Command> {
+    public getCommands(group: Group): readonly Command[] {
         return this.commands.filter((command) => command.group === group);
     }
 
-    getCommand(trigger: string): Command | undefined {
+    public getCommand(trigger: string): Command | undefined {
         return this.commands.find((command) => command.triggers.includes(trigger.toLowerCase()));
     }
 }

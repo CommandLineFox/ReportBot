@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import configTemplate from "~/Config";
-import { generateConfig, getConfig } from "~/ConfigHandler";
+import {generateConfig, getConfig} from "~/ConfigHandler";
 import BotClient from "~/BotClient";
-import { Database } from "@utils/Database";
+import {Database} from "@utils/Database";
 
-function main() {
+async function main() {
     const configFile = "config.json";
 
     if (!fs.existsSync(configFile)) {
@@ -23,14 +23,16 @@ function main() {
     }
 
     const database = new Database(config.db);
-    database.connect();
+    await database.connect();
     const client = new BotClient(config, database);
-    client.login(config.token);
+    await client.login(config.token);
 
     client.on("ready", () => {
         console.log(`Logged in as ${client.user!.tag}`);
-        client.user!.setActivity("reports", { type: "WATCHING" });
-    })
+        client.user!.setActivity("reports", {type: "WATCHING"});
+    });
 }
 
-main();
+main().catch((error) => {
+    console.log(error);
+});

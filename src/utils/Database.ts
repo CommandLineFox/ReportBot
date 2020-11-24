@@ -1,5 +1,5 @@
-import { connect, Db, MongoClientOptions, Collection } from 'mongodb';
-import { Guild } from "@models/Guild";
+import {connect, Db, MongoClientOptions, Collection} from "mongodb";
+import {Guild} from "@models/Guild";
 
 interface DatabaseConfig {
     url: string;
@@ -8,10 +8,12 @@ interface DatabaseConfig {
 }
 
 export class Database {
-    db!: Db;
-    constructor(protected config: DatabaseConfig) { }
+    public db!: Db;
 
-    async connect() {
+    public constructor(protected config: DatabaseConfig) {
+    }
+
+    public async connect(): Promise<void> {
         const client = await connect(this.config.url, this.config.mongoOptions)
             .catch(err => {
                 throw err;
@@ -20,7 +22,7 @@ export class Database {
         console.log("Connected to database");
     }
 
-    get guilds(): Collection<Guild> {
-        return this.db.collection('guilds');
+    public get guilds(): Collection<Guild> {
+        return this.db.collection("guilds");
     }
 }

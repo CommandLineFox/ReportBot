@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import BotClient from "~/BotClient";
-import { Message } from "discord.js";
-import { Guild } from "@models/Guild";
+import {Message} from "discord.js";
+import {Guild} from "@models/Guild";
 
 export const event = new Event("message", async (client: BotClient, message: Message) => {
     if (message.author.bot || !message.guild) {
@@ -9,11 +9,11 @@ export const event = new Event("message", async (client: BotClient, message: Mes
     }
 
     const database = client.database;
-    let guild = await database!.guilds.findOne({ id: message.guild.id });
+    let guild = await database!.guilds.findOne({id: message.guild.id});
     if (!guild) {
-        const newguild = new Guild({ id: message.guild.id });
+        const newguild = new Guild({id: message.guild.id});
         await database!.guilds.insertOne(newguild);
-        guild = await database!.guilds.findOne({ id: message.guild.id });
+        guild = await database!.guilds.findOne({id: message.guild.id});
     }
 
     if (!guild || !guild.config.channels || !guild.config.channels.suggestions || guild.config.channels.suggestions.length === 0) {
@@ -21,7 +21,7 @@ export const event = new Event("message", async (client: BotClient, message: Mes
     }
 
     if (guild.config.channels.suggestions.includes(message.channel.id)) {
-        message.react('✅');
-        message.react('❌');
+        await message.react("✅");
+        await message.react("❌");
     }
-})
+});

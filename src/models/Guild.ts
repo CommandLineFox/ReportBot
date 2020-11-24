@@ -35,12 +35,12 @@ export interface GuildDoc {
 }
 
 export class Guild implements GuildDoc {
-    _id: ObjectId;
-    id: string;
-    config: GuildConfig;
-    reports: Report[];
+    public _id: ObjectId;
+    public id: string;
+    public config: GuildConfig;
+    public reports: Report[];
 
-    constructor(data: GuildDoc) {
+    public constructor(data: GuildDoc) {
         this._id = new ObjectId();
         this.id = data.id;
         this.config = data.config ?? {};

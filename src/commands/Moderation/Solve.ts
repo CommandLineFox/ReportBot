@@ -1,55 +1,54 @@
 import Command from "@command/Command";
-import { Moderation } from "~/Groups";
+import {Moderation} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { TextChannel, MessageEmbed } from "discord.js";
+import {TextChannel, MessageEmbed} from "discord.js";
 
 export default class Solve extends Command {
-    constructor() {
-        super({ name: "Solve", triggers: ["approve", "solve"], description: "Marks a specified report as handled", group: Moderation });
+    public constructor() {
+        super({name: "Solve", triggers: ["approve", "solve"], description: "Marks a specified report as handled", group: Moderation});
     }
 
-    async run(event: CommandEvent) {
+    public async run(event: CommandEvent): Promise<void> {
         try {
             const message = event.message;
             const argument = event.argument;
             const client = event.client;
             const database = client.database;
 
-            const id = parseInt(argument.split(' ')[0]);
-            const guild = await database!.guilds.findOne({ id: message.guild!.id });            
+            const id = parseInt(argument.split(" ")[0]);
+            const guild = await database!.guilds.findOne({id: message.guild!.id});
 
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
-                event.send("The reports channel doesn't exist.");
+                await event.send("The reports channel doesn't exist.");
                 return;
             }
 
-            const report = guild?.reports.find(report => report.id === id)!;
+            const report = guild.reports.find(report => report.id === id)!;
             if (!report) {
-                event.send("The specified report doesn't exist.");
+                await event.send("The specified report doesn't exist.");
                 return;
             }
             if (report.handled) {
-                event.send("The specified report has already been handled.");
+                await event.send("The specified report has already been handled.");
                 return;
             }
-            database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.handled": true } })
+            database?.guilds.updateOne({id: guild!.id, "reports.id": report.id}, {"$set": {"reports.$.handled": true}});
 
             const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
-            const reportmessage = await (submitted as TextChannel).messages.fetch(report.message!);
+            const reportMessage = await (submitted as TextChannel).messages.fetch(report.message!);
 
             const embed = new MessageEmbed()
                 .setTitle(`Case: ${report.id}`)
-                .addField(`User`, report.user)
-                .addField(`Reported by`, report.reporter)
-                .addField(`Reason`, report.reason)
-                .addField(`Evidence`, report.evidence)
-                .addField(`Handled by`, message.author.tag)
-                .setColor(`00FF00`);
+                .addField("User", report.user)
+                .addField("Reported by", report.reporter)
+                .addField("Reason", report.reason)
+                .addField("Evidence", report.evidence)
+                .addField("Handled by", message.author.tag)
+                .setColor("00FF00");
 
-            reportmessage?.edit({ embed: embed });
-            event.send(`Successfully solved case ${report.id}`);
-        }
-        catch (err) {
+            reportMessage?.edit({embed: embed});
+            await event.send(`Successfully solved case ${report.id}`);
+        } catch (err) {
             console.log(err);
         }
     }

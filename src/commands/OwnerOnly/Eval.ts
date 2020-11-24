@@ -1,20 +1,16 @@
 import Command from "@command/Command";
-import { OwnerOnly } from "~/Groups";
+import {OwnerOnly} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { MessageEmbed } from 'discord.js';
-import { inspect } from "util";
-import { runInNewContext } from 'vm';
-
-function makeCodeBlock(data: string, lang?: string) {
-    return `\`\`\`${lang}\n${data}\n\`\`\``;
-}
+import {MessageEmbed} from "discord.js";
+import {inspect} from "util";
+import {runInNewContext} from "vm";
 
 export default class Eval extends Command {
-    constructor() {
-        super({ name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly });
+    public constructor() {
+        super({name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly});
     }
 
-    async run(event: CommandEvent) {
+    public async run(event: CommandEvent): Promise<void> {
         const client = event.client;
         const message = event.message;
         let argument = event.argument;
@@ -26,34 +22,36 @@ export default class Eval extends Command {
         }
 
         const script = parseBlock(argument);
-        const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: message.guild?.id.toString() });
+        const exec = await run(script, {client, message, MessageEmbed, author,}, {filename: message.guild?.id.toString()});
         const end = Date.now();
 
-        if (typeof exec === 'string') {
+        if (typeof exec === "string") {
             const embed = new MessageEmbed()
-                .addField('Input', makeCodeBlock(script, 'js'))
-                .addField('Output', makeCodeBlock(exec, 'js'))
-                .setFooter(`Script Executed in ${end - start}ms`);
-            event.send(embed)
+                .addField("Input", makeCodeBlock(script, "js"))
+                .addField("Output", makeCodeBlock(exec, "js"))
+                .setFooter(`Script executed in ${end - start}ms`);
+
+            await event.send({embed: embed});
         } else {
             const embed = new MessageEmbed()
-                .addField('Input', makeCodeBlock(script, 'js'))
-                .addField('Output', makeCodeBlock(`${exec.name}: ${exec.message}`))
-                .setFooter(`Script Executed in ${end - start}ms`);
-            event.send(embed);
+                .addField("Input", makeCodeBlock(script, "js"))
+                .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
+                .setFooter(`Script executed in ${end - start}ms`);
+            await event.send(embed);
         }
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 async function run(script: string, ctx: object, opts: object): Promise<string | Error> {
     try {
         const result = await runInNewContext(`(async () => { ${script} })()`, ctx, opts);
-        if (typeof result !== 'string') {
+        if (typeof result !== "string") {
             return inspect(result);
         }
+
         return result;
-    }
-    catch (err) {
+    } catch (err) {
         return err;
     }
 }
@@ -62,4 +60,8 @@ function parseBlock(script: string) {
     const cbr = /^(([ \t]*`{3,4})([^\n]*)([\s\S]+?)(^[ \t]*\2))/gm;
     const result = cbr.exec(script);
     return result?.[4] ?? script;
+}
+
+function makeCodeBlock(data: string, lang?: string) {
+    return `\`\`\`${lang}\n${data}\n\`\`\``;
 }

@@ -1,18 +1,29 @@
-import { Message, StringResolvable, MessageOptions, TextChannel, DMChannel, User, Guild, GuildMember, NewsChannel, MessageEmbed } from "discord.js";
+import {
+    Message,
+    StringResolvable,
+    MessageOptions,
+    TextChannel,
+    DMChannel,
+    User,
+    Guild,
+    GuildMember,
+    NewsChannel,
+    MessageEmbed
+} from "discord.js";
 import BotClient from "~/BotClient";
 
 export default class CommandEvent {
-    readonly message: Message;
-    readonly client: BotClient;
-    readonly author: User;
-    readonly argument: string;
-    readonly channel: TextChannel | DMChannel | NewsChannel;
-    readonly isFromGuild: boolean;
-    readonly textChannel: TextChannel | undefined;
-    readonly guild: Guild;
-    readonly member: GuildMember;
+    public readonly message: Message;
+    public readonly client: BotClient;
+    public readonly author: User;
+    public readonly argument: string;
+    public readonly channel: TextChannel | DMChannel | NewsChannel;
+    public readonly isFromGuild: boolean;
+    public readonly textChannel: TextChannel | undefined;
+    public readonly guild: Guild;
+    public readonly member: GuildMember;
 
-    constructor(message: Message, client: BotClient, argument: string) {
+    public constructor(message: Message, client: BotClient, argument: string) {
         this.message = message;
         this.client = client;
         this.author = message.author;
@@ -24,11 +35,11 @@ export default class CommandEvent {
         this.member = message.member!;
     }
 
-    send(content: StringResolvable, options?: MessageOptions | MessageEmbed): Promise<Message | Message[]> {
+    public async send(content: StringResolvable, options?: MessageOptions | MessageEmbed): Promise<Message | Message[]> {
         return options ? this.channel.send(content, options) : this.channel.send(content);
     }
 
-    reply(content: StringResolvable, options?: MessageOptions) {
+    public async reply(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]> {
         return options ? this.message.reply(content, options) : this.message.reply(content);
     }
 }
