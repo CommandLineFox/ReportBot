@@ -15,24 +15,29 @@ class Role extends Command_1.default {
         const database = client.database;
         try {
             const guild = await client.getGuildFromDatabase(database, event.guild.id);
-            const [subcommand, id, rolename] = Utils_1.splitArguments(event.argument, 3);
+            const [subcommand, id, roleName] = Utils_1.splitArguments(event.argument, 3);
             const member = await client.getMember(id, event.guild);
+            if (!subcommand) {
+                await event.send("You must provide a subcommand first. Valid ones are `add` and `remove`.");
+            }
             if (!member) {
-                event.send("Couldn't find the user you're looking for");
+                await event.send("Couldn't find the user you're looking for");
                 return;
             }
             const message = event.message;
             const channel = event.channel;
-            if (rolename.toLowerCase() !== "vip" && rolename.toLowerCase() !== "mvp") {
+            if (roleName.toLowerCase() !== "vip" && roleName.toLowerCase() !== "mvp") {
                 channel.send("Role name can only be VIP or MVP")
                     .then((msg) => {
-                    setTimeout(() => { msg.delete(); }, 5000);
+                    setTimeout(() => {
+                        msg.delete();
+                    }, 5000);
                 });
-                message.delete();
+                await message.delete();
                 return;
             }
             let role;
-            switch (rolename.toLowerCase()) {
+            switch (roleName.toLowerCase()) {
                 case "vip": {
                     role = event.guild.roles.cache.find(role => { var _a; return role.id === ((_a = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _a === void 0 ? void 0 : _a.vip); });
                     break;
@@ -43,18 +48,18 @@ class Role extends Command_1.default {
                 }
             }
             if (!role) {
-                event.send("Couldn't find the role you're looking for");
+                await event.send("Couldn't find the role you're looking for");
                 return;
             }
             switch (subcommand.toLowerCase()) {
                 case "add": {
-                    member.roles.add(role);
-                    event.send(`Added ${role === null || role === void 0 ? void 0 : role.name} to ${member.user.tag}`);
+                    await member.roles.add(role);
+                    await event.send(`Added ${role === null || role === void 0 ? void 0 : role.name} to ${member.user.tag}`);
                     break;
                 }
                 case "remove": {
-                    member.roles.remove(role);
-                    event.send(`Removed ${role === null || role === void 0 ? void 0 : role.name} from ${member.user.tag}`);
+                    await member.roles.remove(role);
+                    await event.send(`Removed ${role === null || role === void 0 ? void 0 : role.name} from ${member.user.tag}`);
                     break;
                 }
             }

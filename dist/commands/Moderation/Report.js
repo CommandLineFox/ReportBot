@@ -20,18 +20,18 @@ class Report extends Command_1.default {
             const client = event.client;
             const guild = await client.getGuildFromDatabase(database, event.guild.id);
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
-                event.send("The reports channel doesn't exist.");
+                await event.send("The reports channel doesn't exist.");
                 return;
             }
-            const [user, reason, evidence] = argument.split('|');
-            let id = (guild === null || guild === void 0 ? void 0 : guild.reports.length) ? (guild === null || guild === void 0 ? void 0 : guild.reports.length) + 1 : 1;
-            const type = (event.client.isMod(member, event.guild) || client.isAdmin(member)) ? true : false;
+            const [user, reason, evidence] = argument.split("|");
+            const id = (guild === null || guild === void 0 ? void 0 : guild.reports.length) ? (guild === null || guild === void 0 ? void 0 : guild.reports.length) + 1 : 1;
+            const type = (await event.client.isMod(member, event.guild));
             const embed = new discord_js_1.MessageEmbed()
                 .setTitle(`Case: ${id}`)
-                .addField(`User`, user)
-                .addField(`Reported by`, message.author.tag)
-                .addField(`Reason`, reason)
-                .addField(`Evidence`, evidence);
+                .addField("User", user)
+                .addField("Reported by", message.author.tag)
+                .addField("Reason", reason)
+                .addField("Evidence", evidence);
             if (type) {
                 embed.setColor("FF00FF");
             }
@@ -39,8 +39,8 @@ class Report extends Command_1.default {
                 embed.setColor("0000FF");
             }
             const channel = (_a = event.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
-            const msgid = (await channel.send({ embed: embed })).id;
-            message.delete();
+            const msgId = (await channel.send({ embed: embed })).id;
+            await message.delete();
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({
                 id: (_b = message.guild) === null || _b === void 0 ? void 0 : _b.id
             }, {
@@ -53,7 +53,7 @@ class Report extends Command_1.default {
                         reporter: message.author.tag,
                         handled: false,
                         type: type,
-                        message: msgid
+                        message: msgId
                     }
                 }
             }));

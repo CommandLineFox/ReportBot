@@ -1,8 +1,13 @@
 {
-  "name": "vnbot",
+  "name": "flyhigh",
   "version": "1.0.0",
   "description": "Handling lightweight reports with user, reason and evidence",
   "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fixpaths": "tscpaths -p tsconfig.json -s ./src -o ./build",
+    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AlexArcticFox/ReportBot.git"

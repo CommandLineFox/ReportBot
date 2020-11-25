@@ -14,22 +14,23 @@ class Config extends Command_1.default {
     async run(event) {
         const client = event.client;
         const database = client.database;
-        let guild = await client.getGuildFromDatabase(database, event.guild.id);
+        const guild = await client.getGuildFromDatabase(database, event.guild.id);
         const [subcommand, option, args] = Utils_1.splitArguments(event.argument, 3);
         if (!subcommand) {
-            displayAllSettings(event, guild);
+            await displayAllSettings(event, guild);
         }
         switch (subcommand.toLowerCase()) {
             case "prefix": {
-                prefixSettings(event, option, args, guild);
+                await prefixSettings(event, option, args, guild);
                 break;
             }
             case "staff": {
-                moderatorSettings(event, option, args, guild);
+                await moderatorSettings(event, option, args, guild);
                 break;
             }
             case "roles": {
-                roleSettings(event, option, args, guild);
+                await roleSettings(event, option, args, guild);
+                break;
             }
         }
     }
@@ -39,22 +40,22 @@ async function prefixSettings(event, option, args, guild) {
     const client = event.client;
     const database = client.database;
     if (!option) {
-        Utils_1.displayData(event, guild, "prefix", true);
+        await Utils_1.displayData(event, guild, "prefix", true);
         return;
     }
     switch (option.toLowerCase()) {
         case "set": {
             if (args.length > 5) {
-                event.send("The prefix can be up to 5 characters.");
+                await event.send("The prefix can be up to 5 characters.");
                 break;
             }
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild === null || guild === void 0 ? void 0 : guild.id }, { "$set": { "config.prefix": args } }));
-            event.send(`The prefix has been set to \`${args}\``);
+            await event.send(`The prefix has been set to \`${args}\``);
             break;
         }
         case "reset": {
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild === null || guild === void 0 ? void 0 : guild.id }, { "$unset": { "config.prefix": "" } }));
-            event.send(`The prefix has been set to \`${client.config.prefix}\``);
+            await event.send(`The prefix has been set to \`${client.config.prefix}\``);
             break;
         }
     }
@@ -62,53 +63,58 @@ async function prefixSettings(event, option, args, guild) {
 async function moderatorSettings(event, option, args, guild) {
     var _a, _b, _c, _d;
     const database = event.client.database;
-    Utils_1.databaseCheck(database, guild, "staff");
+    await Utils_1.databaseCheck(database, guild, "staff");
     if (!option) {
-        Utils_1.displayData(event, guild, "staff", true);
+        await Utils_1.displayData(event, guild, "staff", true);
         return;
     }
     const staff = args;
     if (!staff) {
-        event.send("You need to specify a role.");
+        await event.send("You need to specify a role.");
         return;
     }
     const role = event.guild.roles.cache.find(role => role.id === staff || role.name === staff || `<@&${role.id}>` === staff);
     if (!role) {
-        event.send("Couldn't find the role you're looking for.");
+        await event.send("Couldn't find the role you're looking for.");
         return;
     }
     switch (option.toLowerCase()) {
         case "add": {
             if ((_b = (_a = guild.config.roles) === null || _a === void 0 ? void 0 : _a.staff) === null || _b === void 0 ? void 0 : _b.includes(role.id)) {
-                event.send("The specified role is already a staff role.");
+                await event.send("The specified role is already a staff role.");
                 break;
             }
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$push": { "config.roles.staff": role.id } }));
-            event.send(`Added \`${role.name}\` as a staff role.`);
+            await event.send(`Added \`${role.name}\` as a staff role.`);
             break;
         }
         case "remove": {
             if (!((_d = (_c = guild.config.roles) === null || _c === void 0 ? void 0 : _c.staff) === null || _d === void 0 ? void 0 : _d.includes(role.id))) {
-                event.send("The specified role isn't a staff role.");
+                await event.send("The specified role isn't a staff role.");
                 break;
             }
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.staff": role.id } }));
-            event.send(`\`${role.name}\` is no longer a staff role.`);
+            await event.send(`\`${role.name}\` is no longer a staff role.`);
             break;
         }
     }
 }
 async function roleSettings(event, option, args, guild) {
     const database = event.client.database;
-    Utils_1.databaseCheck(database, guild, "roles");
+    await Utils_1.databaseCheck(database, guild, "roles");
     if (!option) {
-        Utils_1.displayData(event, guild, "roles", true);
+        await Utils_1.displayData(event, guild, "roles", true);
         return;
     }
     switch (option.toLowerCase()) {
-        default: {
-            switch (args) {
+        case "set": {
+            if (args === "") {
+                return;
             }
+            break;
+        }
+        case "remove": {
+            break;
         }
     }
 }
@@ -123,6 +129,6 @@ async function displayAllSettings(event, guild) {
         .addField("VIP", await Utils_1.displayData(event, guild, "vip"), true)
         .setColor("#61e096")
         .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
-    event.send({ embed: embed });
+    await event.send({ embed: embed });
 }
 //# sourceMappingURL=Config.js.map

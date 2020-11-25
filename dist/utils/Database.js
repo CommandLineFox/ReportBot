@@ -15,7 +15,7 @@ class Database {
         console.log("Connected to database");
     }
     get guilds() {
-        return this.db.collection('guilds');
+        return this.db.collection("guilds");
     }
 }
 exports.Database = Database;

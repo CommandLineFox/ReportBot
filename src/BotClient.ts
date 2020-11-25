@@ -4,7 +4,7 @@ import {IFunctionType} from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
 import {Database} from "@utils/Database";
 import {EventHandler} from "@event/EventHandler";
-import {Guild as GuildModel} from "@models/guild";
+import {Guild as GuildModel} from "@models/Guild";
 
 type configTemplate = typeof configTemplate;
 

@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -27,7 +27,7 @@ const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
 const BotClient_1 = __importDefault(require("./BotClient"));
 const Database_1 = require("./utils/Database");
-function main() {
+async function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
         ConfigHandler_1.generateConfig(configFile, Config_1.default);
@@ -42,13 +42,15 @@ function main() {
         return;
     }
     const database = new Database_1.Database(config.db);
-    database.connect();
+    await database.connect();
     const client = new BotClient_1.default(config, database);
-    client.login(config.token);
+    await client.login(config.token);
     client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`);
         client.user.setActivity("reports", { type: "WATCHING" });
     });
 }
-main();
+main().catch((error) => {
+    console.log(error);
+});
 //# sourceMappingURL=index.js.map

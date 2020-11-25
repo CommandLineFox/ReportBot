@@ -21,8 +21,8 @@ exports.event = new Event_1.default("message", async (client, message) => {
         return;
     }
     if (guild.config.channels.suggestions.includes(message.channel.id)) {
-        message.react('✅');
-        message.react('❌');
+        await message.react("✅");
+        await message.react("❌");
     }
 });
 //# sourceMappingURL=Message.js.map

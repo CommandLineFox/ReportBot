@@ -6,7 +6,12 @@ import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
     public constructor() {
-        super({name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic});
+        super({
+            name: "Help",
+            triggers: ["help", "commands", "cmds"],
+            description: "Displays all my commands",
+            group: Basic
+        });
     }
 
     public async run(event: CommandEvent): Promise<void> {
@@ -14,6 +19,7 @@ export default class Help extends Command {
         const author = event.author;
         const member = event.member;
         const guild = event.guild;
+        const mod = await client.isMod(member, guild);
 
         const help = new MessageEmbed()
             .setTitle("Here's the list of all my commands")
@@ -24,11 +30,11 @@ export default class Help extends Command {
                 return;
             } else if (group.adminOnly && !client.isAdmin(member)) {
                 return;
-            } else if (group.modOnly && !client.isMod(member, guild)) {
+            } else if (group.modOnly && !mod) {
                 return;
             }
-            const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
 
+            const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join("`,`")}\`) -> ${command.description}`);
             if (commands.length === 0) {
                 return;
             }
