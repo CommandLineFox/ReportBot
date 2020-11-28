@@ -1,8 +1,18 @@
 import BotClient from "~/BotClient";
 
-type EventFunction = (client: BotClient, ...args: any[]) => void;
+interface EventOptions {
+    readonly name: string;
+    readonly disabled?: boolean;
+}
 
-export default class Event {
-    public constructor(public name: string, public func: EventFunction) {
+export default abstract class Event implements EventOptions {
+    public readonly name: string;
+    public readonly disabled: boolean;
+
+    public constructor(options: EventOptions) {
+        this.name = options.name;
+        this.disabled = options.disabled ?? false;
     }
+
+    public abstract func(client:BotClient, ...args: any[]): void;
 }

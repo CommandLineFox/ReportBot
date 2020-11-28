@@ -1,15 +1,13 @@
 import BotClient from "~/BotClient";
-import {promisify} from "util";
-import {readdir} from "fs";
+import EventRegistry from "./EventRegistry";
 
-export async function EventHandler(client: BotClient): Promise<void> {
-    const readDir = promisify(readdir);
+export default class EventHandler {
+    public readonly client: BotClient;
 
-    const events = await readDir("./dist/events");
-    for (const item of events) {
-        if (item.endsWith(".js")) {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
-            const {event} = require(`../events/${item}`);
+    public constructor(client: BotClient) {
+        this.client = client;
+
+        for (const event of EventRegistry.events) {
             client.on(event.name, (...args) => {
                 event.func(client, ...args);
             });

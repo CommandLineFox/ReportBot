@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
-const EventHandler_1 = require("./event/EventHandler");
+const EventHandler_1 = __importDefault(require("./event/EventHandler"));
 const Guild_1 = require("./models/Guild");
 class BotClient extends discord_js_1.Client {
     constructor(config, database, options) {
@@ -14,7 +14,7 @@ class BotClient extends discord_js_1.Client {
         this.database = database;
         this.once("ready", async () => {
             new CommandHandler_1.default(this);
-            await EventHandler_1.EventHandler(this);
+            new EventHandler_1.default(this);
         });
     }
     async getGuildFromDatabase(database, id) {

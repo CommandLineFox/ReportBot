@@ -3,7 +3,7 @@ import configTemplate from "~/Config";
 import {IFunctionType} from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
 import {Database} from "@utils/Database";
-import {EventHandler} from "@event/EventHandler";
+import EventHandler from "@event/EventHandler";
 import {Guild as GuildModel} from "@models/Guild";
 
 type configTemplate = typeof configTemplate;
@@ -18,7 +18,7 @@ export default class BotClient extends Client {
         this.database = database;
         this.once("ready", async () => {
             new CommandHandler(this);
-            await EventHandler(this);
+            new EventHandler(this);
         });
     }
 

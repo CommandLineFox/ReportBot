@@ -1,15 +1,4 @@
-import {
-    Message,
-    StringResolvable,
-    MessageOptions,
-    TextChannel,
-    DMChannel,
-    User,
-    Guild,
-    GuildMember,
-    NewsChannel,
-    MessageEmbed
-} from "discord.js";
+import { Message, StringResolvable, MessageOptions, TextChannel, DMChannel, User, Guild, GuildMember, NewsChannel, MessageEmbed } from "discord.js";
 import BotClient from "~/BotClient";
 
 export default class CommandEvent {

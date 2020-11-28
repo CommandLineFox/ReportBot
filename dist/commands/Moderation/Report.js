@@ -23,21 +23,37 @@ class Report extends Command_1.default {
                 await event.send("The reports channel doesn't exist.");
                 return;
             }
-            const [user, reason, evidence] = argument.split("|");
+            const [user, reason, evidence, actiontype] = argument.split("|");
             const id = (guild === null || guild === void 0 ? void 0 : guild.reports.length) ? (guild === null || guild === void 0 ? void 0 : guild.reports.length) + 1 : 1;
             const type = (await event.client.isMod(member, event.guild));
+            let action = "", color = "00FF00";
             const embed = new discord_js_1.MessageEmbed()
-                .setTitle(`Case: ${id}`)
-                .addField("User", user)
+                .addField("User", user.trim())
                 .addField("Reported by", message.author.tag)
-                .addField("Reason", reason)
-                .addField("Evidence", evidence);
+                .addField("Reason", reason.trim())
+                .addField("Evidence", evidence.trim());
             if (type) {
-                embed.setColor("FF00FF");
+                color = "FF00FF";
             }
             else {
-                embed.setColor("0000FF");
+                color = "0000FF";
             }
+            if (actiontype) {
+                color = "00FF00";
+                embed.addField("Handled by", message.author.tag);
+                switch (actiontype.trim().toLowerCase()) {
+                    case "kick": {
+                        action = " - Kicked";
+                        break;
+                    }
+                    case "ban": {
+                        action = " - Banned";
+                        break;
+                    }
+                }
+            }
+            embed.setColor(color)
+                .setTitle(`Case: ${id} ${action}`);
             const channel = (_a = event.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const msgId = (await channel.send({ embed: embed })).id;
             await message.delete();
