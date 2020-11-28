@@ -2,6 +2,7 @@ import Command from "@command/Command";
 import {Moderation} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import {TextChannel, MessageEmbed} from "discord.js";
+import { splitArguments } from "@utils/Utils";
 
 export default class Solve extends Command {
     public constructor() {
@@ -15,7 +16,9 @@ export default class Solve extends Command {
             const client = event.client;
             const database = client.database;
 
-            const id = parseInt(argument.split(" ")[0]);
+            const [idstring, actiontype] = splitArguments(argument, 2);
+            const id = parseInt(idstring);
+
             const guild = await database!.guilds.findOne({id: message.guild!.id});
 
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
@@ -37,8 +40,23 @@ export default class Solve extends Command {
             const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
             const reportMessage = await (submitted as TextChannel).messages.fetch(report.message!);
 
+            let action = "";
+            if (actiontype) {
+                switch (actiontype.trim().toLowerCase()) {
+                    case "kick": {
+                        action = " - Kicked";
+                        break;
+                    }
+
+                    case "ban": {
+                        action = " - Banned";
+                        break;
+                    }
+                }
+            }
+
             const embed = new MessageEmbed()
-                .setTitle(`Case: ${report.id}`)
+                .setTitle(`Case: ${report.id} ${action}`)
                 .addField("User", report.user)
                 .addField("Reported by", report.reporter)
                 .addField("Reason", report.reason)

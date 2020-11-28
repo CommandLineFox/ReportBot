@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
+const Utils_1 = require("../../utils/Utils");
 class Solve extends Command_1.default {
     constructor() {
         super({ name: "Solve", triggers: ["approve", "solve"], description: "Marks a specified report as handled", group: Groups_1.Moderation });
@@ -17,7 +18,8 @@ class Solve extends Command_1.default {
             const argument = event.argument;
             const client = event.client;
             const database = client.database;
-            const id = parseInt(argument.split(" ")[0]);
+            const [idstring, actiontype] = Utils_1.splitArguments(argument, 2);
+            const id = parseInt(idstring);
             const guild = await database.guilds.findOne({ id: message.guild.id });
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 await event.send("The reports channel doesn't exist.");
@@ -35,8 +37,21 @@ class Solve extends Command_1.default {
             database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.handled": true } });
             const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const reportMessage = await submitted.messages.fetch(report.message);
+            let action = "";
+            if (actiontype) {
+                switch (actiontype.trim().toLowerCase()) {
+                    case "kick": {
+                        action = " - Kicked";
+                        break;
+                    }
+                    case "ban": {
+                        action = " - Banned";
+                        break;
+                    }
+                }
+            }
             const embed = new discord_js_1.MessageEmbed()
-                .setTitle(`Case: ${report.id}`)
+                .setTitle(`Case: ${report.id} ${action}`)
                 .addField("User", report.user)
                 .addField("Reported by", report.reporter)
                 .addField("Reason", report.reason)
