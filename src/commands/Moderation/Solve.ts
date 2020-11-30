@@ -2,7 +2,7 @@ import Command from "@command/Command";
 import {Moderation} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import {TextChannel, MessageEmbed} from "discord.js";
-import { splitArguments } from "@utils/Utils";
+import {splitArguments} from "@utils/Utils";
 
 export default class Solve extends Command {
     public constructor() {
@@ -41,7 +41,7 @@ export default class Solve extends Command {
             const reportMessage = await (submitted as TextChannel).messages.fetch(report.message!);
 
             let action = "";
-            if (actiontype) {
+            if (client.isMod(event.member, event.guild) && actiontype) {
                 switch (actiontype.trim().toLowerCase()) {
                     case "kick": {
                         action = " - Kicked";

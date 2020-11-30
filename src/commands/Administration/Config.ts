@@ -19,6 +19,7 @@ export default class Config extends Command {
 
         if (!subcommand) {
             await displayAllSettings(event, guild!);
+            return;
         }
 
         switch (subcommand.toLowerCase()) {

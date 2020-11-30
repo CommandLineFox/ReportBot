@@ -18,6 +18,7 @@ class Config extends Command_1.default {
         const [subcommand, option, args] = Utils_1.splitArguments(event.argument, 3);
         if (!subcommand) {
             await displayAllSettings(event, guild);
+            return;
         }
         switch (subcommand.toLowerCase()) {
             case "prefix": {

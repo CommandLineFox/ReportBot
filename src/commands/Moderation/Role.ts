@@ -1,11 +1,11 @@
 import Command from "@command/Command";
-import {Moderation} from "~/Groups";
+import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {splitArguments} from "@utils/Utils";
+import { splitArguments } from "@utils/Utils";
 
 export default class Role extends Command {
     public constructor() {
-        super({name: "Role", triggers: ["role"], description: "Gives or takes a specified role from a specified user", group: Moderation});
+        super({ name: "Role", triggers: ["role"], description: "Gives or takes a specified role from a specified user", group: Moderation });
     }
 
     public async run(event: CommandEvent): Promise<void> {
