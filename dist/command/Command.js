@@ -18,35 +18,30 @@ class Command {
     async execute(event) {
         var _a, _b, _c, _d;
         if (this.ownerOnly && !event.client.isOwner(event.author)) {
-            await event.reply("you do not own me!");
+            event.reply("you do not own me!");
             return;
         }
         if ((this.modOnly && !(await event.client.isMod(event.member, event.guild))) || (this.adminOnly && !event.client.isAdmin(event.member))) {
-            await event.reply("you do not have permission to run this command.");
+            event.reply("you do not have permission to run this command.");
             return;
         }
         if (this.guildOnly && !event.isFromGuild) {
-            await event.reply("this command can only be used in servers.");
+            event.reply("this command can only be used in servers.");
             return;
         }
         if (event.isFromGuild) {
             const missingBotPermission = (_b = (_a = event.textChannel) === null || _a === void 0 ? void 0 : _a.permissionsFor(event.guild.me)) === null || _b === void 0 ? void 0 : _b.missing(this.botPermissions);
             if (!missingBotPermission) {
-                await event.reply("I am not allowed to run this command.");
+                event.reply("I am not allowed to run this command.");
                 return;
             }
             const missingUserPermission = (_d = (_c = event.textChannel) === null || _c === void 0 ? void 0 : _c.permissionsFor(event.member)) === null || _d === void 0 ? void 0 : _d.missing(this.userPermissions);
             if (!missingUserPermission) {
-                await event.reply("you are not allowed to run this command.");
+                event.reply("you are not allowed to run this command.");
                 return;
             }
         }
-        try {
-            this.run(event);
-        }
-        catch (error) {
-            console.log(error);
-        }
+        this.run(event);
     }
 }
 exports.default = Command;

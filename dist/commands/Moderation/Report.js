@@ -17,47 +17,48 @@ class Report extends Command_1.default {
             const argument = event.argument;
             const database = event.client.database;
             const member = event.member;
-            const client = event.client;
-            const guild = await client.getGuildFromDatabase(database, event.guild.id);
+            const guild = await database.getGuild(event.guild.id);
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;
             }
-            const [user, reason, evidence, actiontype] = argument.split("|");
-            const id = (guild === null || guild === void 0 ? void 0 : guild.reports.length) ? (guild === null || guild === void 0 ? void 0 : guild.reports.length) + 1 : 1;
+            if (!guild.config.channels.dump) {
+                await event.send("The dump channel doesn't exist.");
+                return;
+            }
+            const dump = event.guild.channels.cache.get(guild.config.channels.dump);
+            if (!dump) {
+                await event.send("The dump channel doesn't exist.");
+                return;
+            }
+            const attachment = message.attachments.first();
+            let dumped;
+            if (attachment) {
+                dumped = await dump.send(attachment);
+            }
+            const [user, reason, evidence = (_a = dumped === null || dumped === void 0 ? void 0 : dumped.attachments.first()) === null || _a === void 0 ? void 0 : _a.url] = argument.split("|");
+            if (!user || !reason || !evidence) {
+                return;
+            }
+            const id = (guild.reports.length) ? guild.reports.length + 1 : 1;
             const type = (await event.client.isMod(member, event.guild));
-            let action = "", color = "00FF00";
             const embed = new discord_js_1.MessageEmbed()
                 .addField("User", user.trim())
                 .addField("Reported by", message.author.tag)
                 .addField("Reason", reason.trim())
                 .addField("Evidence", evidence.trim());
+            let color;
             if (type) {
                 color = "FF00FF";
             }
             else {
                 color = "0000FF";
             }
-            if (actiontype) {
-                color = "00FF00";
-                embed.addField("Handled by", message.author.tag);
-                switch (actiontype.trim().toLowerCase()) {
-                    case "kick": {
-                        action = " - Kicked";
-                        break;
-                    }
-                    case "ban": {
-                        action = " - Banned";
-                        break;
-                    }
-                }
-            }
-            embed.setColor(color)
-                .setTitle(`Case: ${id} ${action}`);
-            const channel = (_a = event.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
+            embed.setColor(color);
+            const channel = event.guild.channels.cache.get(guild.config.channels.submitted);
             const msgId = (await channel.send({ embed: embed })).id;
             await message.delete();
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({
+            await database.guilds.updateOne({
                 id: (_b = message.guild) === null || _b === void 0 ? void 0 : _b.id
             }, {
                 "$push": {
@@ -72,7 +73,7 @@ class Report extends Command_1.default {
                         message: msgId
                     }
                 }
-            }));
+            });
         }
         catch (err) {
             console.log(err);

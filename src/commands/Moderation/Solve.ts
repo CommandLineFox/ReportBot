@@ -1,12 +1,12 @@
 import Command from "@command/Command";
-import {Moderation} from "~/Groups";
+import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {TextChannel, MessageEmbed} from "discord.js";
-import {splitArguments} from "@utils/Utils";
+import { TextChannel, MessageEmbed } from "discord.js";
+import { splitArguments } from "@utils/Utils";
 
 export default class Solve extends Command {
     public constructor() {
-        super({name: "Solve", triggers: ["approve", "solve"], description: "Marks a specified report as handled", group: Moderation});
+        super({ name: "Solve", triggers: ["approve", "solve"], description: "Marks a specified report as handled", group: Moderation });
     }
 
     public async run(event: CommandEvent): Promise<void> {
@@ -19,7 +19,7 @@ export default class Solve extends Command {
             const [idstring, actiontype] = splitArguments(argument, 2);
             const id = parseInt(idstring);
 
-            const guild = await database!.guilds.findOne({id: message.guild!.id});
+            const guild = await database.guilds.findOne({ id: message.guild!.id });
 
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 await event.send("The reports channel doesn't exist.");
@@ -35,7 +35,7 @@ export default class Solve extends Command {
                 await event.send("The specified report has already been handled.");
                 return;
             }
-            database?.guilds.updateOne({id: guild!.id, "reports.id": report.id}, {"$set": {"reports.$.handled": true}});
+            database.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.handled": true } });
 
             const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
             const reportMessage = await (submitted as TextChannel).messages.fetch(report.message!);
@@ -64,7 +64,7 @@ export default class Solve extends Command {
                 .addField("Handled by", message.author.tag)
                 .setColor("00FF00");
 
-            reportMessage?.edit({embed: embed});
+            reportMessage?.edit({ embed: embed });
             await event.send(`Successfully solved case ${report.id}`);
         } catch (err) {
             console.log(err);

@@ -1,11 +1,11 @@
 import Command from "@command/Command";
-import {Basic} from "~/Groups";
+import { Basic } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {MessageEmbed, Message} from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 
 export default class Ping extends Command {
     public constructor() {
-        super({name: "Ping", triggers: ["ping"], description: "Shows the bot's response time", group: Basic});
+        super({ name: "Ping", triggers: ["ping"], description: "Shows the bot's response time", group: Basic });
     }
 
     public run(event: CommandEvent): void {
@@ -15,7 +15,7 @@ export default class Ping extends Command {
                 const ping = new MessageEmbed()
                     .addField(":hourglass: Response time: ", `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
                     .addField(":heartbeat: Bot ping: ", `${Math.round(event.client.ws.ping)}ms`, true);
-                await msg.edit({content: "", embed: ping});
+                await msg.edit({ content: "", embed: ping });
             });
     }
 }

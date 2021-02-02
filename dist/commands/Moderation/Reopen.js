@@ -18,7 +18,7 @@ class Reopen extends Command_1.default {
             const client = event.client;
             const database = client.database;
             const id = parseInt(argument.split(" ")[0]);
-            const guild = await client.getGuildFromDatabase(database, event.guild.id);
+            const guild = await database.getGuild(event.guild.id);
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;

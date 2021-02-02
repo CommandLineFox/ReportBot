@@ -1,12 +1,12 @@
 import Command from "@command/Command";
-import {Moderation} from "~/Groups";
+import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {TextChannel, MessageEmbed} from "discord.js";
-import {splitArguments} from "@utils/Utils";
+import { TextChannel, MessageEmbed } from "discord.js";
+import { splitArguments } from "@utils/Utils";
 
 export default class Edit extends Command {
     public constructor() {
-        super({name: "Edit", triggers: ["edit", "change"], description: "Edits a part of the report", group: Moderation});
+        super({ name: "Edit", triggers: ["edit", "change"], description: "Edits a part of the report", group: Moderation });
     }
 
     public async run(event: CommandEvent): Promise<void> {
@@ -17,9 +17,12 @@ export default class Edit extends Command {
             const database = client.database;
 
             const [id, segment, value] = splitArguments(argument, 3);
-            let guild = await client.getGuildFromDatabase(database!, event.guild.id);
+            let guild = await database.getGuild(event.guild.id);
+            if (!guild) {
+                return;
+            }
 
-            let report = guild!.reports.find(report => report.id === parseInt(id))!;
+            let report = guild.reports.find(report => report.id === parseInt(id))!;
             if (!report) {
                 await event.send("The specified report doesn't exist.");
                 return;
@@ -30,7 +33,7 @@ export default class Edit extends Command {
                     await database?.guilds.updateOne({
                         id: guild!.id,
                         "reports.id": report.id
-                    }, {"$set": {"reports.$.user": value}});
+                    }, { "$set": { "reports.$.user": value } });
                     await event.send(`Successfully updated the user of case ${id}`);
                     break;
                 }
@@ -38,7 +41,7 @@ export default class Edit extends Command {
                     await database?.guilds.updateOne({
                         id: guild!.id,
                         "reports.id": report.id
-                    }, {"$set": {"reports.$.reason": value}});
+                    }, { "$set": { "reports.$.reason": value } });
                     await event.send(`Successfully updated the reason of case ${id}`);
                     break;
                 }
@@ -46,13 +49,13 @@ export default class Edit extends Command {
                     await database?.guilds.updateOne({
                         id: guild!.id,
                         "reports.id": report.id
-                    }, {"$set": {"reports.$.evidence": value}});
+                    }, { "$set": { "reports.$.evidence": value } });
                     await event.send(`Successfully updated the evidence of case ${id}`);
                     break;
                 }
             }
 
-            guild = await database!.guilds.findOne({id: message.guild!.id});
+            guild = await database!.guilds.findOne({ id: message.guild!.id });
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;
@@ -75,7 +78,7 @@ export default class Edit extends Command {
                 embed.setColor("0000FF");
             }
 
-            await reportMessage?.edit({embed: embed});
+            await reportMessage?.edit({ embed: embed });
         } catch (err) {
             console.log(err);
         }

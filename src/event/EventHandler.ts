@@ -9,7 +9,7 @@ export default class EventHandler {
 
         for (const event of EventRegistry.events) {
             client.on(event.name, (...args) => {
-                event.func(client, ...args);
+                event.callback(client, ...args);
             });
         }
     }

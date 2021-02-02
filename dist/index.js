@@ -26,7 +26,7 @@ const fs = __importStar(require("fs"));
 const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
 const BotClient_1 = __importDefault(require("./BotClient"));
-const Database_1 = require("./utils/Database");
+const Database_1 = require("./database/Database");
 async function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
@@ -43,14 +43,13 @@ async function main() {
     }
     const database = new Database_1.Database(config.db);
     await database.connect();
+    if (!database) {
+        console.warn("Failed to connect to database");
+        console.info("Please make sure the bot can connect to the database before restarting");
+        return;
+    }
     const client = new BotClient_1.default(config, database);
-    await client.login(config.token);
-    client.on("ready", () => {
-        console.log(`Logged in as ${client.user.tag}`);
-        client.user.setActivity("reports", { type: "WATCHING" });
-    });
+    client.login(config.token);
 }
-main().catch((error) => {
-    console.log(error);
-});
+main();
 //# sourceMappingURL=index.js.map

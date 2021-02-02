@@ -19,7 +19,10 @@ class Edit extends Command_1.default {
             const client = event.client;
             const database = client.database;
             const [id, segment, value] = Utils_1.splitArguments(argument, 3);
-            let guild = await client.getGuildFromDatabase(database, event.guild.id);
+            let guild = await database.getGuild(event.guild.id);
+            if (!guild) {
+                return;
+            }
             let report = guild.reports.find(report => report.id === parseInt(id));
             if (!report) {
                 await event.send("The specified report doesn't exist.");

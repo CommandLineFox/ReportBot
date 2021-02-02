@@ -1,5 +1,5 @@
-import {connect, Db, MongoClientOptions, Collection} from "mongodb";
-import {Guild} from "@models/Guild";
+import { connect, Db, MongoClientOptions, Collection } from "mongodb";
+import { Guild } from "@models/Guild";
 
 interface DatabaseConfig {
     url: string;
@@ -20,6 +20,17 @@ export class Database {
             });
         this.db = client.db(this.config.name);
         console.log("Connected to database");
+    }
+
+    public async getGuild(id: string): Promise<Guild | null> {
+        let guild = await this.guilds.findOne({ id: id });
+        if (!guild) {
+            const newGuild = ({ id: id, config: {}, reports: [] });
+            await this.guilds.insertOne(newGuild);
+            guild = await this.guilds.findOne({ id: id });
+        }
+
+        return guild;
     }
 
     public get guilds(): Collection<Guild> {

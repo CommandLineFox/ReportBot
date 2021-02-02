@@ -14,6 +14,15 @@ class Database {
         this.db = client.db(this.config.name);
         console.log("Connected to database");
     }
+    async getGuild(id) {
+        let guild = await this.guilds.findOne({ id: id });
+        if (!guild) {
+            const newGuild = ({ id: id, config: {}, reports: [] });
+            await this.guilds.insertOne(newGuild);
+            guild = await this.guilds.findOne({ id: id });
+        }
+        return guild;
+    }
     get guilds() {
         return this.db.collection("guilds");
     }

@@ -1,6 +1,6 @@
 import BotClient from "~/BotClient";
 import CommandRegistry from "@command/CommandRegistry";
-import {Message} from "discord.js";
+import { Message } from "discord.js";
 import CommandEvent from "@command/CommandEvent";
 
 export default class CommandHandler {
@@ -47,9 +47,10 @@ export default class CommandHandler {
 
     private async handleMention(message: Message, content: string) {
         if (content.length === 0) {
-            await message.reply(`My prefix here is \`${await this.client.getPrefix(message.guild!)}\``);
+            message.reply(`My prefix here is \`${await this.client.getPrefix(message.guild!)}\``);
             return;
         }
-        await this.handlePrefix(message, content);
+
+        this.handlePrefix(message, content);
     }
 }

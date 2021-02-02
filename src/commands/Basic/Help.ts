@@ -1,7 +1,7 @@
 import Command from "@command/Command";
-import {Basic} from "~/Groups";
+import { Basic } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {MessageEmbed} from "discord.js";
+import { MessageEmbed } from "discord.js";
 import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
@@ -42,6 +42,6 @@ export default class Help extends Command {
             help.addField(group.name, commands.join("\n"));
         });
 
-        await event.send({embed: help});
+        await event.send({ embed: help });
     }
 }

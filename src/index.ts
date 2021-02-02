@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import configTemplate from "~/Config";
-import {generateConfig, getConfig} from "~/ConfigHandler";
+import { generateConfig, getConfig } from "~/ConfigHandler";
 import BotClient from "~/BotClient";
-import {Database} from "@utils/Database";
+import { Database } from "@database/Database";
 
 async function main() {
     const configFile = "config.json";
@@ -24,15 +24,14 @@ async function main() {
 
     const database = new Database(config.db);
     await database.connect();
-    const client = new BotClient(config, database);
-    await client.login(config.token);
+    if (!database) {
+        console.warn("Failed to connect to database");
+        console.info("Please make sure the bot can connect to the database before restarting");
+        return;
+    }
 
-    client.on("ready", () => {
-        console.log(`Logged in as ${client.user!.tag}`);
-        client.user!.setActivity("reports", {type: "WATCHING"});
-    });
+    const client = new BotClient(config, database);
+    client.login(config.token);
 }
 
-main().catch((error) => {
-    console.log(error);
-});
+main();

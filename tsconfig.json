@@ -47,6 +47,9 @@
       ],
       "@event/*": [
         "src/event/*"
+      ],
+      "@database/*": [
+        "src/database/*"
       ]
     },
     "types": [

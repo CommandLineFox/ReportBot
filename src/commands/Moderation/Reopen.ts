@@ -1,11 +1,11 @@
 import Command from "@command/Command";
-import {Moderation} from "~/Groups";
+import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {TextChannel, MessageEmbed} from "discord.js";
+import { TextChannel, MessageEmbed } from "discord.js";
 
 export default class Reopen extends Command {
     public constructor() {
-        super({name: "Reopen", triggers: ["reopen", "open"], description: "Reopens the specified solved report", group: Moderation});
+        super({ name: "Reopen", triggers: ["reopen", "open"], description: "Reopens the specified solved report", group: Moderation });
     }
 
     public async run(event: CommandEvent): Promise<void> {
@@ -16,7 +16,7 @@ export default class Reopen extends Command {
             const database = client.database;
 
             const id = parseInt(argument.split(" ")[0]);
-            const guild = await client.getGuildFromDatabase(database!, event.guild.id);
+            const guild = await database.getGuild(event.guild.id);
 
             if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
                 await event.send("The reports channel doesn't exist.");
@@ -33,7 +33,7 @@ export default class Reopen extends Command {
                 await event.send("The specified report hasn't been handled yet.");
                 return;
             }
-            database?.guilds.updateOne({id: guild!.id, "reports.id": report.id}, {"$set": {"reports.$.handled": false}});
+            database?.guilds.updateOne({ id: guild!.id, "reports.id": report.id }, { "$set": { "reports.$.handled": false } });
 
             const submitted = message.guild?.channels.cache.get(guild.config.channels.submitted);
             const reportMessage = await (submitted as TextChannel).messages.fetch(report.message!);
@@ -51,7 +51,7 @@ export default class Reopen extends Command {
                 embed.setColor("0000FF");
             }
 
-            reportMessage?.edit({embed: embed});
+            reportMessage?.edit({ embed: embed });
             await event.send(`Successfully reopened case ${report.id}`);
         } catch (err) {
             console.log(err);

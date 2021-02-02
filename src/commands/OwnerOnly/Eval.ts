@@ -1,13 +1,13 @@
 import Command from "@command/Command";
-import {OwnerOnly} from "~/Groups";
+import { OwnerOnly } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {MessageEmbed} from "discord.js";
-import {inspect} from "util";
-import {runInNewContext} from "vm";
+import { MessageEmbed } from "discord.js";
+import { inspect } from "util";
+import { runInNewContext } from "vm";
 
 export default class Eval extends Command {
     public constructor() {
-        super({name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly});
+        super({ name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly });
     }
 
     public async run(event: CommandEvent): Promise<void> {
@@ -22,7 +22,7 @@ export default class Eval extends Command {
         }
 
         const script = parseBlock(argument);
-        const exec = await run(script, {client, message, MessageEmbed, author,}, {filename: message.guild?.id.toString()});
+        const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: message.guild?.id.toString() });
         const end = Date.now();
 
         if (typeof exec === "string") {
@@ -31,7 +31,7 @@ export default class Eval extends Command {
                 .addField("Output", makeCodeBlock(exec, "js"))
                 .setFooter(`Script executed in ${end - start}ms`);
 
-            await event.send({embed: embed});
+            await event.send({ embed: embed });
         } else {
             const embed = new MessageEmbed()
                 .addField("Input", makeCodeBlock(script, "js"))

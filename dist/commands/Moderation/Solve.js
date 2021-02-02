@@ -34,11 +34,11 @@ class Solve extends Command_1.default {
                 await event.send("The specified report has already been handled.");
                 return;
             }
-            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.handled": true } });
+            database.guilds.updateOne({ id: guild.id, "reports.id": report.id }, { "$set": { "reports.$.handled": true } });
             const submitted = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.channels.cache.get(guild.config.channels.submitted);
             const reportMessage = await submitted.messages.fetch(report.message);
             let action = "";
-            if (actiontype) {
+            if (client.isMod(event.member, event.guild) && actiontype) {
                 switch (actiontype.trim().toLowerCase()) {
                     case "kick": {
                         action = " - Kicked";

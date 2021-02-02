@@ -14,5 +14,5 @@ export default abstract class Event implements EventOptions {
         this.disabled = options.disabled ?? false;
     }
 
-    public abstract func(client:BotClient, ...args: any[]): void;
+    public abstract callback(client: BotClient, ...args: any[]): void;
 }

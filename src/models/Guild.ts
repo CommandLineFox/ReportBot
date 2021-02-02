@@ -1,14 +1,12 @@
 import { ObjectId } from "bson";
 
 export interface Roles {
-    vip?: string;
-    mvp?: string;
     staff?: string[];
 }
 
 export interface Channels {
     submitted?: string;
-    suggestions?: string[];
+    dump?: string;
 }
 
 export interface GuildConfig {
@@ -28,22 +26,9 @@ export interface Report {
     message?: string;
 }
 
-export interface GuildDoc {
+export interface Guild {
+    _id: ObjectId;
     id: string;
-    config?: GuildConfig;
-    reports?: Report[];
-}
-
-export class Guild implements GuildDoc {
-    public _id: ObjectId;
-    public id: string;
-    public config: GuildConfig;
-    public reports: Report[];
-
-    public constructor(data: GuildDoc) {
-        this._id = new ObjectId();
-        this.id = data.id;
-        this.config = data.config ?? {};
-        this.reports = data.reports ?? [];
-    }
+    config: GuildConfig;
+    reports: Report[];
 }
