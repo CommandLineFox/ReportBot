@@ -47,6 +47,7 @@ export default class Report extends Command {
             const type = (await event.client.isMod(member, event.guild));
 
             const embed = new MessageEmbed()
+                .setTitle(`Case ${id}`)
                 .addField("User", user.trim())
                 .addField("Reported by", message.author.tag)
                 .addField("Reason", reason.trim())
