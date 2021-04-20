@@ -30,24 +30,24 @@ export default class Edit extends Command {
 
             switch (segment.toLowerCase()) {
                 case "user": {
-                    await database?.guilds.updateOne({
-                        id: guild!.id,
+                    await database.guilds.updateOne({
+                        id: guild.id,
                         "reports.id": report.id
                     }, { "$set": { "reports.$.user": value } });
                     await event.send(`Successfully updated the user of case ${id}`);
                     break;
                 }
                 case "reason": {
-                    await database?.guilds.updateOne({
-                        id: guild!.id,
+                    await database.guilds.updateOne({
+                        id: guild.id,
                         "reports.id": report.id
                     }, { "$set": { "reports.$.reason": value } });
                     await event.send(`Successfully updated the reason of case ${id}`);
                     break;
                 }
                 case "evidence": {
-                    await database?.guilds.updateOne({
-                        id: guild!.id,
+                    await database.guilds.updateOne({
+                        id: guild.id,
                         "reports.id": report.id
                     }, { "$set": { "reports.$.evidence": value } });
                     await event.send(`Successfully updated the evidence of case ${id}`);
@@ -55,8 +55,8 @@ export default class Edit extends Command {
                 }
             }
 
-            guild = await database!.guilds.findOne({ id: message.guild!.id });
-            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+            guild = await database.guilds.findOne({ id: message.guild!.id });
+            if (!guild?.config.channels?.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;
             }
@@ -78,7 +78,7 @@ export default class Edit extends Command {
                 embed.setColor("0000FF");
             }
 
-            await reportMessage?.edit({ embed: embed });
+            await reportMessage.edit({ embed: embed });
         } catch (err) {
             console.log(err);
         }

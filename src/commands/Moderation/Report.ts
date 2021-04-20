@@ -16,7 +16,7 @@ export default class Report extends Command {
             const member = event.member;
 
             const guild = await database.getGuild(event.guild.id);
-            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+            if (!guild?.config.channels?.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;
             }
@@ -66,22 +66,7 @@ export default class Report extends Command {
             const msgId = (await (channel as TextChannel).send({ embed: embed })).id;
             await message.delete();
 
-            await database.guilds.updateOne({
-                id: message.guild?.id
-            }, {
-                "$push": {
-                    reports: {
-                        id: id,
-                        user: user,
-                        reason: reason,
-                        evidence: evidence,
-                        reporter: message.author.tag,
-                        handled: false,
-                        type: type,
-                        message: msgId
-                    }
-                }
-            });
+            await database.guilds.updateOne({ id: message.guild?.id }, { "$push": { reports: { id: id, user: user, reason: reason, evidence: evidence, reporter: message.author.tag, handled: false, type: type, message: msgId } } });
         } catch (err) {
             console.log(err);
         }

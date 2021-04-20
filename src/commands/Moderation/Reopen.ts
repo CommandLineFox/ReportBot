@@ -18,7 +18,7 @@ export default class Reopen extends Command {
             const id = parseInt(argument.split(" ")[0]);
             const guild = await database.getGuild(event.guild.id);
 
-            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+            if (!guild?.config.channels?.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;
             }
@@ -51,7 +51,7 @@ export default class Reopen extends Command {
                 embed.setColor("0000FF");
             }
 
-            reportMessage?.edit({ embed: embed });
+            reportMessage.edit({ embed: embed });
             await event.send(`Successfully reopened case ${report.id}`);
         } catch (err) {
             console.log(err);

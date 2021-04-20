@@ -21,7 +21,7 @@ export default class Solve extends Command {
 
             const guild = await database.guilds.findOne({ id: message.guild!.id });
 
-            if (!guild || !guild.config.channels || !guild.config.channels.submitted) {
+            if (!guild?.config.channels?.submitted) {
                 await event.send("The reports channel doesn't exist.");
                 return;
             }
@@ -64,7 +64,7 @@ export default class Solve extends Command {
                 .addField("Handled by", message.author.tag)
                 .setColor("00FF00");
 
-            reportMessage?.edit({ embed: embed });
+            reportMessage.edit({ embed: embed });
             await event.send(`Successfully solved case ${report.id}`);
         } catch (err) {
             console.log(err);
